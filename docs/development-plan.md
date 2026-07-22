@@ -14,7 +14,7 @@ Follow PRD §23. Do not skip steps.
 | 8. Logging | **done** | Loki + Promtail + Grafana Loki DS |
 | 9. CI/CD | **done** | GitHub Actions CI + CD + deploy scripts |
 | 10. Dashboard wiring | **done** | real adapters + UI pages |
-| 11. Tests | pending | unit + integration critical paths |
+| 11. Tests | **done** | JUnit/MockMvc + Vitest + CI smoke |
 | 12. README complete | pending | PRD §25 checklist |
 
 ## Definition of Done (v1)

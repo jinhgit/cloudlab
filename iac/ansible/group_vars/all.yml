@@ -1,0 +1,23 @@
+---
+# CloudLab Ansible defaults (lab sketch)
+cloudlab_timezone: Asia/Seoul
+cloudlab_repo_url: https://github.com/jinhgit/cloudlab.git
+cloudlab_repo_version: main
+cloudlab_install_dir: /opt/cloudlab
+cloudlab_deploy_mode: compose   # compose | k8s
+
+# Docker
+docker_package_state: present
+
+# k3s (only when cloudlab_deploy_mode == k8s)
+k3s_install: false
+k3s_version: ""   # empty = channel stable
+
+# App compose files relative to install dir
+cloudlab_compose_files:
+  - docker-compose.yml
+  - docker-compose.monitoring.yml
+  - docker-compose.logging.yml
+
+# Health
+cloudlab_health_url: "http://127.0.0.1:8080/actuator/health"

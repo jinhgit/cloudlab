@@ -712,15 +712,20 @@ README(`.github/README.md`)에는 반드시 포함한다. **Step 12 완료 기�
 
 ---
 
-## 27. CloudLab v2 Roadmap (Out of v1 Scope)
+## 27. CloudLab v2 Roadmap (IaC)
 
-v1 완성 후 다음을 추가하여 **IaC 플랫폼**으로 확장한다.
+v1 완성 후 **IaC 플랫폼**으로 확장한다.
 
-- Terraform: 서버/네트워크/기본 인프라 프로비저닝
-- Ansible: 런타임·에이전트·앱 구성 자동화
-- UX: “버튼 한 번으로 서버 구축 → 배포 → 모니터링 자동 구성”
+| 항목 | 상태 |
+|------|------|
+| Terraform modules (network/SG/compute) + `envs/lab` | **Sketch done** (`iac/terraform/`) |
+| Ansible roles (common/docker/k3s/cloudlab_app) | **Sketch done** (`iac/ansible/`) |
+| Bootstrap orchestrator | **Sketch done** (`scripts/iac-bootstrap.sh`) |
+| Design doc | [docs/v2-iac.md](./v2-iac.md) |
+| Live AWS apply + destroy | Pending (credentials / cost) |
+| Multi-cloud / HA | Future |
 
-스토리라인: **v1 운영 플랫폼 → v2 인프라 자동화 플랫폼**.
+스토리라인: **v1 운영 플랫폼 → v2 인프라 자동화 플랫폼 (scaffold in-repo)**.
 
 ---
 

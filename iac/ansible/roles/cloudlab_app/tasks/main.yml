@@ -1,0 +1,70 @@
+---
+# Deploy CloudLab v1 stack onto the lab node
+- name: Ensure install directory
+  ansible.builtin.file:
+    path: "{{ cloudlab_install_dir }}"
+    state: directory
+    owner: "{{ ansible_user | default('ubuntu') }}"
+    group: "{{ ansible_user | default('ubuntu') }}"
+    mode: "0755"
+
+- name: Clone or update CloudLab repository
+  ansible.builtin.git:
+    repo: "{{ cloudlab_repo_url }}"
+    dest: "{{ cloudlab_install_dir }}"
+    version: "{{ cloudlab_repo_version }}"
+    force: false
+    update: true
+  become_user: "{{ ansible_user | default('ubuntu') }}"
+
+- name: Ensure .env exists from example
+  ansible.builtin.copy:
+    src: "{{ cloudlab_install_dir }}/.env.example"
+    dest: "{{ cloudlab_install_dir }}/.env"
+    remote_src: true
+    force: false
+    owner: "{{ ansible_user | default('ubuntu') }}"
+    mode: "0600"
+
+- name: Deploy with Docker Compose (v1 stack)
+  when: cloudlab_deploy_mode == "compose"
+  block:
+    - name: Build compose file list args
+      ansible.builtin.set_fact:
+        _compose_args: >-
+          {{ cloudlab_compose_files | map('regex_replace', '^(.*)$', '-f ' + cloudlab_install_dir + '/\\1') | join(' ') }}
+
+    - name: docker compose up -d --build
+      ansible.builtin.shell: |
+        set -euo pipefail
+        cd "{{ cloudlab_install_dir }}"
+        docker compose {{ _compose_args }} up -d --build
+      args:
+        executable: /bin/bash
+
+- name: Deploy with k3s manifests (optional)
+  when: cloudlab_deploy_mode == "k8s"
+  block:
+    - name: Apply kustomize
+      ansible.builtin.shell: |
+        set -euo pipefail
+        cd "{{ cloudlab_install_dir }}"
+        kubectl apply -k kubernetes/
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+- name: Wait for Platform API health
+  ansible.builtin.uri:
+    url: "{{ cloudlab_health_url }}"
+    status_code: 200
+    return_content: true
+  register: health
+  retries: 30
+  delay: 10
+  until: health.status == 200
+  ignore_errors: true
+
+- name: Show health body
+  ansible.builtin.debug:
+    var: health.content
+  when: health is defined

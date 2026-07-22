@@ -1,0 +1,31 @@
+---
+# Optional single-node k3s (CloudLab v1 kubernetes/ manifests)
+- name: Skip k3s when disabled
+  ansible.builtin.debug:
+    msg: "k3s_install=false — skipping k3s role"
+  when: not (k3s_install | bool)
+
+- name: Install k3s (server)
+  ansible.builtin.shell: |
+    set -euo pipefail
+    curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -
+  args:
+    creates: /usr/local/bin/k3s
+  when: k3s_install | bool
+
+- name: Wait for k3s node Ready
+  ansible.builtin.command: k3s kubectl get nodes
+  register: k3s_nodes
+  retries: 20
+  delay: 5
+  until: k3s_nodes.rc == 0
+  when: k3s_install | bool
+
+- name: Symlink kubeconfig for ubuntu user
+  ansible.builtin.file:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "/home/{{ ansible_user | default('ubuntu') }}/.kube/config"
+    state: link
+    force: true
+  when: k3s_install | bool
+  ignore_errors: true

@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars (gitignored) and edit.
+aws_region         = "ap-northeast-2"
+availability_zone  = "ap-northeast-2a"
+name_prefix        = "cloudlab-lab"
+key_name           = "my-ec2-keypair"   # must exist in the account
+instance_type      = "t3.medium"
+use_eip            = true
+enable_compute     = true
+
+# Strongly recommended: lock SSH to your IP
+# allowed_ssh_cidrs = ["203.0.113.10/32"]
+allowed_ssh_cidrs  = ["0.0.0.0/0"]
+allowed_http_cidrs = ["0.0.0.0/0"]

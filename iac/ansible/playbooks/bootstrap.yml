@@ -1,0 +1,34 @@
+---
+# Full v2 bootstrap path documentation entrypoint.
+# Infra (Terraform) is expected to have created the host already.
+# Order: common → docker → optional k3s → cloudlab_app → assert health
+
+- name: Bootstrap CloudLab on lab node
+  hosts: cloudlab
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Wait for SSH / cloud-init marker
+      ansible.builtin.wait_for:
+        path: /var/lib/cloudlab/cloud-init.done
+        timeout: 300
+      ignore_errors: true
+
+    - name: Fallback wait for apt lock free
+      ansible.builtin.shell: |
+        while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 3; done
+      changed_when: false
+
+  roles:
+    - common
+    - docker_host
+    - role: k3s_node
+      when: k3s_install | default(false) | bool
+    - cloudlab_app
+
+  post_tasks:
+    - name: Record bootstrap timestamp
+      ansible.builtin.copy:
+        content: "{{ ansible_date_time.iso8601 | default(lookup('pipe', 'date -Iseconds')) }}\n"
+        dest: /var/lib/cloudlab/bootstrap.done
+        mode: "0644"

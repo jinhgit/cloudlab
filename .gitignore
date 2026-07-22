@@ -50,12 +50,24 @@ hs_err_pid*
 # Docker
 *.log
 
-# Terraform / Ansible (v2 future)
+# Terraform / Ansible (v2 IaC)
 .terraform/
+**/.terraform/
 *.tfstate
 *.tfstate.*
+*.tfplan
+tfplan
+crash.log
+override.tf
+*_override.tf
 .tfvars
+*.tfvars
+!*.tfvars.example
+iac/ansible/inventory/lab.ini
+iac/ansible/inventory/*.ini
+!iac/ansible/inventory/*.example.ini
 *.retry
+.vault_pass
 
 # Python tooling (if scripts use it)
 __pycache__/

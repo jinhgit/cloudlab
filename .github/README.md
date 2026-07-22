@@ -168,7 +168,8 @@ cloudlab/
 ├── monitoring/               # Prometheus · Grafana · Alertmanager
 ├── logging/                  # Loki · Promtail
 ├── nginx/                    # reverse proxy (docs)
-├── scripts/                  # compose / k8s / ci helpers
+├── scripts/                  # compose / k8s / ci / iac helpers
+├── iac/                      # v2 Terraform + Ansible sketch
 ├── docs/                     # PRD · architecture · runbooks
 ├── .github/
 │   ├── README.md             # ← 이 문서
@@ -535,16 +536,34 @@ cd frontend && npm test
 
 ## 21. 향후 개선 사항 (v2)
 
+### v2 IaC 스케치 (구현됨 — scaffold)
+
+| 경로 | 역할 |
+|------|------|
+| [`iac/terraform/`](../iac/terraform/) | VPC · SG · EC2 모듈 + `envs/lab` |
+| [`iac/ansible/`](../iac/ansible/) | common · docker · k3s · cloudlab_app |
+| [`scripts/iac-bootstrap.sh`](../scripts/iac-bootstrap.sh) | plan/apply → inventory → bootstrap |
+| [docs/v2-iac.md](../docs/v2-iac.md) | 설계 · 경계 · 성공 기준 |
+
+```bash
+# Terraform plan (credentials + tfvars 필요)
+./scripts/iac-plan.sh
+
+# Full path (AUTO_APPROVE / SKIP_TF 옵션)
+# AUTO_APPROVE=true ./scripts/iac-bootstrap.sh
+```
+
+### 이어서 할 일
+
 | 항목 | 설명 |
 |------|------|
-| **Terraform** | 서버·네트워크 프로비저닝 |
-| **Ansible** | 런타임·에이전트 구성 |
-| **One-click bootstrap** | 인프라 → 배포 → 관측 자동 구성 |
-| JWT RBAC 강제 | ADMIN / VIEWER 본격 적용 |
-| Playwright E2E | Compose 기반 UI E2E |
+| 실제 AWS apply + destroy 검증 | lab 계정에서 E2E |
+| JWT RBAC 강제 | ADMIN / VIEWER |
+| Playwright E2E | Compose UI |
 | Docker socket proxy | root 마운트 제거 |
+| Remote Terraform state | S3 + DynamoDB |
 
-스토리: **v1 운영 플랫폼 → v2 IaC 플랫폼**.
+스토리: **v1 운영 플랫폼 → v2 IaC 플랫폼 (스케치 완료)**.
 
 ---
 
@@ -563,6 +582,7 @@ cd frontend && npm test
 | CI/CD | [docs/cicd.md](../docs/cicd.md) |
 | Dashboard wiring | [docs/dashboard-wiring.md](../docs/dashboard-wiring.md) |
 | Testing | [docs/testing.md](../docs/testing.md) |
+| v2 IaC | [docs/v2-iac.md](../docs/v2-iac.md) · [iac/](../iac/) |
 | Demo | [docs/demo-scenario.md](../docs/demo-scenario.md) |
 | AI contract | [AGENTS.md](../AGENTS.md) |
 

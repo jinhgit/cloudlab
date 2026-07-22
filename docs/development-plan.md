@@ -24,3 +24,10 @@ Follow PRD §23. Do not skip steps.
 - README §25 complete
 - ADMIN/VIEWER auth working
 - Secrets not committed
+
+## v2 (post v1)
+
+| Item | Status |
+|------|--------|
+| IaC sketch (Terraform + Ansible + bootstrap) | **done** — see `iac/`, `docs/v2-iac.md` |
+| Live cloud apply verification | pending |

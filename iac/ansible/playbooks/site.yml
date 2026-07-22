@@ -1,0 +1,11 @@
+---
+# Configure an existing host (no Terraform). Idempotent.
+- name: CloudLab lab configuration
+  hosts: cloudlab
+  become: true
+  roles:
+    - common
+    - docker_host
+    - role: k3s_node
+      when: k3s_install | default(false) | bool
+    - cloudlab_app

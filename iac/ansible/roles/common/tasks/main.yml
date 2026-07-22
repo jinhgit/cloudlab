@@ -1,0 +1,38 @@
+---
+- name: Set timezone
+  ansible.builtin.command: "timedatectl set-timezone {{ cloudlab_timezone | default('Asia/Seoul') }}"
+  changed_when: true
+  ignore_errors: true
+
+- name: Apt update cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install baseline packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - git
+      - jq
+      - htop
+      - unzip
+      - python3-pip
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Disable password authentication over SSH (harden)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  notify: Restart ssh
+
+- name: Ensure cloudlab marker dir
+  ansible.builtin.file:
+    path: /var/lib/cloudlab
+    state: directory
+    mode: "0755"

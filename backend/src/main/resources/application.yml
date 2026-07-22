@@ -29,6 +29,17 @@ cloudlab:
   version: 0.1.0-SNAPSHOT
   cors:
     allowed-origins: ${CLOUDLAB_CORS_ORIGINS:http://localhost:3000}
+  security:
+    open-api: ${CLOUDLAB_SECURITY_OPEN_API:true}
+  integrations:
+    prometheus-url: ${CLOUDLAB_PROMETHEUS_URL:http://localhost:9090}
+    loki-url: ${CLOUDLAB_LOKI_URL:http://localhost:3100}
+    alertmanager-url: ${CLOUDLAB_ALERTMANAGER_URL:http://localhost:9093}
+    docker-host: ${CLOUDLAB_DOCKER_HOST:unix:///var/run/docker.sock}
+    kubeconfig: ${KUBECONFIG:}
+    github-token: ${GITHUB_TOKEN:}
+    github-owner: ${GITHUB_OWNER:}
+    github-repo: ${GITHUB_REPO:}
 
 logging:
   level:

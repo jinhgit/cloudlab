@@ -1,107 +1,110 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { usePlatformHealth, usePlatformInfo } from "@/hooks/use-platform-health";
+import { StatCard } from "@/components/ui/stat-card";
+import { ErrorBanner } from "@/components/ui/error-banner";
+import { fetchServerStatus, fetchPlatformInfo } from "@/services/api";
 import { useSettingsStore } from "@/store/settings-store";
 
-const WIDGETS = [
-  { key: "cpu", label: "CPU", hint: "Prometheus · Step 7+" },
-  { key: "memory", label: "Memory", hint: "Prometheus · Step 7+" },
-  { key: "disk", label: "Disk", hint: "Node Exporter · Step 7+" },
-  { key: "network", label: "Network", hint: "RX / TX · Step 7+" },
-  { key: "containers", label: "Containers", hint: "Docker API · Step 10" },
-  { key: "pods", label: "Pods", hint: "k3s API · Step 10" },
-] as const;
+function fmt(n: unknown, suffix = "") {
+  if (typeof n !== "number" || Number.isNaN(n)) return "—";
+  return `${n.toFixed?.(1) ?? n}${suffix}`;
+}
 
 export default function DashboardPage() {
   const pollingMs = useSettingsStore((s) => s.pollingMs);
-  const { data: health, isError, isLoading } = usePlatformHealth();
-  const { data: info } = usePlatformInfo();
+  const statusQ = useQuery({
+    queryKey: ["server", "status"],
+    queryFn: fetchServerStatus,
+    refetchInterval: pollingMs,
+  });
+  const infoQ = useQuery({
+    queryKey: ["platform", "info"],
+    queryFn: fetchPlatformInfo,
+    staleTime: 60_000,
+  });
 
-  const apiStatus = isLoading ? "checking" : isError ? "offline" : health?.data?.status ?? "unknown";
+  const d = statusQ.data?.data;
+  const err = statusQ.error instanceof Error ? statusQ.error.message : null;
 
   return (
-    <AppShell
-      title="Dashboard"
-      description="서버 · 리소스 · 최근 배포/알림/로그 요약"
-    >
+    <AppShell title="Dashboard" description="서버 · 리소스 · 통합 상태 요약 (실데이터)">
       <div className="space-y-6">
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <Card className="sm:col-span-2 xl:col-span-1">
-            <CardHeader>
-              <CardTitle>Platform API</CardTitle>
-              <CardDescription>Spring Boot control plane</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Status</span>
-                {apiStatus === "UP" ? (
-                  <Badge variant="success">UP</Badge>
-                ) : apiStatus === "checking" ? (
-                  <Badge variant="secondary">Checking</Badge>
-                ) : (
-                  <Badge variant="warning">Offline</Badge>
-                )}
-              </div>
-              <p className="font-mono text-xs text-muted-foreground">
-                {info?.data?.name ?? "CloudLab Platform API"}
-                {info?.data?.version ? ` · v${info.data.version}` : ""}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Polling every {pollingMs}ms (Settings). WebSocket fallback later.
-              </p>
-            </CardContent>
-          </Card>
+        {err ? <ErrorBanner message={err} /> : null}
 
-          {WIDGETS.map((w) => (
-            <Card key={w.key}>
-              <CardHeader>
-                <CardTitle>{w.label}</CardTitle>
-                <CardDescription>{w.hint}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-semibold tabular-nums text-muted-foreground">
-                  —
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  실데이터 연동 전 placeholder
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <StatCard
+            title="CPU"
+            description="Node Exporter"
+            value={fmt(d?.cpuPercent, "%")}
+            hint="Prometheus · 5m avg"
+          />
+          <StatCard
+            title="Memory"
+            description="Node Exporter"
+            value={fmt(d?.memoryPercent, "%")}
+          />
+          <StatCard
+            title="Disk"
+            description="mount /"
+            value={fmt(d?.diskPercent, "%")}
+          />
+          <StatCard
+            title="JVM Heap"
+            description="cloudlab-backend"
+            value={
+              typeof d?.jvmHeapUsed === "number"
+                ? `${(Number(d.jvmHeapUsed) / 1024 / 1024).toFixed(0)} MB`
+                : "—"
+            }
+          />
         </section>
 
-        <section className="grid gap-3 lg:grid-cols-3">
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <StatCard
+            title="Containers"
+            value={`${String(d?.containersRunning ?? "—")} / ${String(d?.containersTotal ?? "—")}`}
+            hint="running / total (Docker)"
+          />
+          <StatCard title="Pods" value={String(d?.podsTotal ?? "—")} hint="Kubernetes (if connected)" />
+          <StatCard title="Alerts firing" value={String(d?.alertsFiring ?? "—")} hint="Alertmanager" />
           <Card>
             <CardHeader>
-              <CardTitle>Recent Deploys</CardTitle>
-              <CardDescription>GitHub Actions · Step 9–10</CardDescription>
+              <CardTitle>Integrations</CardTitle>
+              <CardDescription>Upstream reachability</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              아직 배포 이력이 없습니다.
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Alerts</CardTitle>
-              <CardDescription>Alertmanager · Step 7–10</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              활성 알림이 없습니다.
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Logs</CardTitle>
-              <CardDescription>Loki · Step 8–10</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              로그 스트림 대기 중.
+            <CardContent className="flex flex-wrap gap-2">
+              {(
+                [
+                  ["prometheus", d?.prometheus],
+                  ["loki", d?.loki],
+                  ["alertmanager", d?.alertmanager],
+                  ["docker", d?.docker],
+                  ["kubernetes", d?.kubernetes],
+                ] as const
+              ).map(([name, ok]) => (
+                <Badge key={name} variant={ok ? "success" : "warning"}>
+                  {name}: {ok ? "up" : "down"}
+                </Badge>
+              ))}
             </CardContent>
           </Card>
         </section>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Platform API</CardTitle>
+            <CardDescription>
+              {infoQ.data?.data?.name ?? "CloudLab"} · v{infoQ.data?.data?.version ?? "—"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            Polling every {pollingMs}ms · Step 10 real adapters (Docker / Prometheus / Loki / …)
+          </CardContent>
+        </Card>
       </div>
     </AppShell>
   );

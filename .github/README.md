@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 9 완료 — GitHub Actions CI/CD 파이프라인 |
+| **현재 단계** | Step 10 완료 — Dashboard 실데이터 연동 (Platform API adapters) |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -702,7 +702,7 @@ curl -s localhost:8080/actuator/health
 | 7 | Monitoring | **Done** |
 | 8 | Logging | **Done** |
 | 9 | CI/CD | **Done** |
-| 10 | Dashboard 실연동 | Pending |
+| 10 | Dashboard 실연동 | **Done** |
 | 11 | 테스트 | Pending |
 | 12 | README/문서 최종 정리 | Pending |
 

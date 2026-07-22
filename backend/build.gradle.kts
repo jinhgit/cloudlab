@@ -43,6 +43,12 @@ dependencies {
     // Observability metrics for Prometheus scrape (Step 7)
     implementation("io.micrometer:micrometer-registry-prometheus")
 
+    // Platform adapters (Step 10)
+    implementation("com.github.docker-java:docker-java-core:3.4.2")
+    implementation("com.github.docker-java:docker-java-transport-zerodep:3.4.2")
+    implementation("io.kubernetes:client-java:21.0.2")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 

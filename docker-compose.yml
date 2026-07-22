@@ -77,7 +77,20 @@ services:
       JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string}
       CLOUDLAB_CORS_ORIGINS: ${CLOUDLAB_CORS_ORIGINS:-http://localhost:3000}
       CLOUDLAB_WAIT_FOR: postgres:5432 redis:6379
+      CLOUDLAB_PROMETHEUS_URL: ${CLOUDLAB_PROMETHEUS_URL:-http://prometheus:9090}
+      CLOUDLAB_LOKI_URL: ${CLOUDLAB_LOKI_URL:-http://loki:3100}
+      CLOUDLAB_ALERTMANAGER_URL: ${CLOUDLAB_ALERTMANAGER_URL:-http://alertmanager:9093}
+      CLOUDLAB_DOCKER_HOST: ${CLOUDLAB_DOCKER_HOST:-unix:///var/run/docker.sock}
+      CLOUDLAB_SECURITY_OPEN_API: ${CLOUDLAB_SECURITY_OPEN_API:-true}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_OWNER: ${GITHUB_OWNER:-}
+      GITHUB_REPO: ${GITHUB_REPO:-}
       JAVA_OPTS: ${JAVA_OPTS:--XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0}
+    # Lab: docker.sock requires root (or docker group). Override image USER for Engine API access.
+    user: "0:0"
+    volumes:
+      # Docker page adapter (start/stop/restart/logs)
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "${SERVER_PORT:-8080}:8080"
     healthcheck:

@@ -27,6 +27,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ApiResponse.fail("BAD_REQUEST", ex.getMessage()));
     }
 
+    @ExceptionHandler(UpstreamException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUpstream(UpstreamException ex) {
+        log.warn("Upstream error [{}]: {}", ex.getCode(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(ApiResponse.fail(ex.getCode(), ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
         log.error("Unhandled exception", ex);

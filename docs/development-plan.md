@@ -15,7 +15,7 @@ Follow PRD §23. Do not skip steps.
 | 9. CI/CD | **done** | GitHub Actions CI + CD + deploy scripts |
 | 10. Dashboard wiring | **done** | real adapters + UI pages |
 | 11. Tests | **done** | JUnit/MockMvc + Vitest + CI smoke |
-| 12. README complete | pending | PRD §25 checklist |
+| 12. README complete | **done** | PRD §25 checklist in .github/README.md |
 
 ## Definition of Done (v1)
 

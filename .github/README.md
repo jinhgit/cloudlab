@@ -34,7 +34,8 @@
 | **Repo** | https://github.com/jinhgit/cloudlab |
 | **PRD** | [docs/PRD.md](../docs/PRD.md) |
 | **Status** | Self-hosted ops platform MVP — real adapters, Compose stack, CI/CD |
-| **5-min demo** | [docs/demo-playbook.md](../docs/demo-playbook.md) · `./scripts/demo-run.sh` |
+| **5-min demo** | [docs/demo-rehearsal-ui.md](../docs/demo-rehearsal-ui.md) · `./scripts/demo-run.sh` |
+| **이력서 문구** | [docs/resume-one-liners.md](../docs/resume-one-liners.md) |
 
 ### Live demo evidence (auto-captured)
 
@@ -486,7 +487,12 @@ Alert rules: backend down, target down, node CPU/memory pressure.
 | 6 | Logs (Loki) |
 | 7 | Dashboard 정상 복귀 클로징 |
 
-전체 대본·백업 플랜: [docs/demo-playbook.md](../docs/demo-playbook.md)
+| 자료 | 링크 |
+|------|------|
+| **UI 동선 + 초별 대본** | [docs/demo-rehearsal-ui.md](../docs/demo-rehearsal-ui.md) |
+| 플레이북·백업 | [docs/demo-playbook.md](../docs/demo-playbook.md) |
+| **이력서 한 줄** | [docs/resume-one-liners.md](../docs/resume-one-liners.md) |
+| 터미널 큐 | `./scripts/demo-run.sh` · `./scripts/demo-run.sh --print` |
 
 ---
 
@@ -624,7 +630,9 @@ cd frontend && npm test
 | Dashboard wiring | [docs/dashboard-wiring.md](../docs/dashboard-wiring.md) |
 | Testing | [docs/testing.md](../docs/testing.md) |
 | v2 IaC | [docs/v2-iac.md](../docs/v2-iac.md) · [iac/](../iac/) |
-| Demo | [docs/demo-scenario.md](../docs/demo-scenario.md) |
+| Demo rehearsal (UI) | [docs/demo-rehearsal-ui.md](../docs/demo-rehearsal-ui.md) |
+| Resume one-liners | [docs/resume-one-liners.md](../docs/resume-one-liners.md) |
+| Demo playbook | [docs/demo-playbook.md](../docs/demo-playbook.md) |
 | AI contract | [AGENTS.md](../AGENTS.md) |
 
 ---

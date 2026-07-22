@@ -1,7 +1,12 @@
 # 면접 데모 플레이북 (5분) — 끊김 없이
 
-목표: **운영 플랫폼**임을 한 흐름으로 증명한다.  
-상세 큐 카드: `./scripts/demo-run.sh`
+목표: **운영 플랫폼**임을 한 흐름으로 증명한다.
+
+| 자료 | 링크 |
+|------|------|
+| **UI 동선 + 상세 대본** | [demo-rehearsal-ui.md](./demo-rehearsal-ui.md) |
+| **이력서 한 줄 / 불릿** | [resume-one-liners.md](./resume-one-liners.md) |
+| 터미널 큐 카드 | `./scripts/demo-run.sh` · `--print` 로 전체 출력 |
 
 ---
 

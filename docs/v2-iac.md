@@ -146,12 +146,22 @@ ansible-playbook -i inventory/lab.ini playbooks/bootstrap.yml
 | `scripts/ci/*` | post-deploy health |
 | `.env.example` | template on host |
 
+## Free vs paid (important)
+
+| Path | Cost | Command |
+|------|------|---------|
+| **Free validation (default)** | **$0** | `./scripts/iac-free-check.sh` |
+| AWS Free Tier apply | *not guaranteed $0* | see [v2-aws-free-checklist.md](./v2-aws-free-checklist.md) |
+| Paid instance types | **blocked** by free-check | do not use t3.medium etc. |
+
+Real AWS EC2 is **never permanently free**. This sketch prioritizes $0 local validation.
+
 ## Success criteria (when implementing for real)
 
-1. `terraform apply` creates reachable SSH host.  
-2. `ansible-playbook bootstrap.yml` leaves CloudLab Dashboard responding on `:3000`.  
-3. `/api/server/status` shows prometheus/loki/docker flags.  
-4. Destroy path: `terraform destroy` leaves no orphan lab resources.
+1. `./scripts/iac-free-check.sh` exits 0 (always free).  
+2. (Optional Free Tier) `terraform apply` creates reachable SSH host with **micro** only.  
+3. `ansible-playbook bootstrap.yml` leaves CloudLab Dashboard responding on `:3000`.  
+4. Destroy path: `terraform destroy` leaves no orphan lab resources **same day**.
 
 ---
 

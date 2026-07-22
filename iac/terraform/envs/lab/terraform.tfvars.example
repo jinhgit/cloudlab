@@ -1,10 +1,13 @@
 # Copy to terraform.tfvars (gitignored) and edit.
+# Prefer free-tier profile: terraform.tfvars.free-tier.example
+# See docs/v2-aws-free-checklist.md — paid resources are discouraged.
 aws_region         = "ap-northeast-2"
 availability_zone  = "ap-northeast-2a"
 name_prefix        = "cloudlab-lab"
 key_name           = "my-ec2-keypair"   # must exist in the account
-instance_type      = "t3.medium"
-use_eip            = true
+instance_type      = "t3.micro"         # free-tier candidate (not a $0 guarantee)
+root_volume_gb     = 8
+use_eip            = false              # idle EIP can cost money
 enable_compute     = true
 
 # Strongly recommended: lock SSH to your IP

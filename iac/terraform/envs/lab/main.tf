@@ -27,5 +27,6 @@ module "compute" {
   security_group_id = module.security_group.security_group_id
   key_name          = var.key_name
   instance_type     = var.instance_type
+  root_volume_gb    = var.root_volume_gb
   use_eip           = var.use_eip
 }

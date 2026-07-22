@@ -2,38 +2,56 @@
 
 Terraform (provision) + Ansible (configure) scaffold for **one-node lab** bootstrap.
 
-> **Not a full multi-cloud product yet.** Structure and contracts are ready; fill credentials and run against a real AWS (or adapt modules) account.
+## Cost policy
+
+| Path | Cost | Command |
+|------|------|---------|
+| **Default validation** | **$0** | `./scripts/iac-free-check.sh` |
+| AWS Free Tier apply | Not guaranteed $0 | opt-in only, see free checklist |
+| Paid instance types | **Blocked** | free-check fails |
+
+> AWS EC2 is **not permanently free**. Free Tier has account/time limits.  
+> Full checklist: [docs/v2-aws-free-checklist.md](../docs/v2-aws-free-checklist.md)
 
 ## Quick map
 
 | Tool | Path | Job |
 |------|------|-----|
-| Terraform | `terraform/envs/lab` | VPC · SG · EC2 · EIP |
+| Terraform | `terraform/envs/lab` | VPC · SG · EC2 (micro) |
 | Ansible | `ansible/playbooks/bootstrap.yml` | OS · Docker · k3s · CloudLab |
-| Orchestrator | `../scripts/iac-bootstrap.sh` | plan → apply → configure |
+| Free check | `../scripts/iac-free-check.sh` | fmt · validate · free-tier rules |
 
-## Docs
-
-- Design: [docs/v2-iac.md](../docs/v2-iac.md)
-- v1 stack still lives at repo root (`docker-compose*.yml`, `kubernetes/`)
-
-## Minimal usage
+## Always free ($0)
 
 ```bash
-# Terraform
-cd terraform/envs/lab
-cp terraform.tfvars.example terraform.tfvars
-# edit key_name, region, allowed_ssh_cidrs
-terraform init && terraform plan
+# repo root
+./scripts/iac-free-check.sh
+```
 
-# Ansible (after you have a host IP)
-cd ../../ansible
+## Optional Free Tier apply (risk)
+
+```bash
+cd terraform/envs/lab
+cp terraform.tfvars.free-tier.example terraform.tfvars
+# edit key_name + allowed_ssh_cidrs = YOUR_IP/32
+
+# refused unless you set the flag:
+I_UNDERSTAND_AWS_MAY_CHARGE=yes ./scripts/iac-apply-free-tier.sh
+
+# same day:
+terraform destroy
+```
+
+## Ansible only
+
+```bash
+cd ansible
 cp inventory/lab.example.ini inventory/lab.ini
-# set ansible_host=
 ansible-playbook -i inventory/lab.ini playbooks/site.yml --check
 ```
 
 ## Safety
 
-- Do **not** commit `terraform.tfvars`, `*.tfstate`, `inventory/lab.ini` with real IPs/keys.
-- Default sketch uses **AWS provider** APIs; charges may apply if you `apply`.
+- Do **not** commit `terraform.tfvars`, `*.tfstate`, real inventory hosts.
+- Free lab defaults: `t3.micro`, `use_eip=false`, `root_volume_gb=8`.
+- Design: [docs/v2-iac.md](../docs/v2-iac.md)

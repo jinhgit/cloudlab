@@ -546,22 +546,24 @@ cd frontend && npm test
 | [docs/v2-iac.md](../docs/v2-iac.md) | 설계 · 경계 · 성공 기준 |
 
 ```bash
-# Terraform plan (credentials + tfvars 필요)
-./scripts/iac-plan.sh
+# 항상 무료 ($0) — 권장
+./scripts/iac-free-check.sh
 
-# Full path (AUTO_APPROVE / SKIP_TF 옵션)
-# AUTO_APPROVE=true ./scripts/iac-bootstrap.sh
+# Free Tier apply는 기본 차단. 문서 숙지 후에만:
+# I_UNDERSTAND_AWS_MAY_CHARGE=yes ./scripts/iac-apply-free-tier.sh
 ```
+
+**과금:** AWS EC2는 영구 무료가 아닙니다. Free Tier 한도·실수 시 유료.  
+상세 체크리스트: [docs/v2-aws-free-checklist.md](../docs/v2-aws-free-checklist.md)
 
 ### 이어서 할 일
 
 | 항목 | 설명 |
 |------|------|
-| 실제 AWS apply + destroy 검증 | lab 계정에서 E2E |
+| Free Tier 실 apply (선택) | micro만 · 당일 destroy · 예산 알림 |
 | JWT RBAC 강제 | ADMIN / VIEWER |
 | Playwright E2E | Compose UI |
 | Docker socket proxy | root 마운트 제거 |
-| Remote Terraform state | S3 + DynamoDB |
 
 스토리: **v1 운영 플랫폼 → v2 IaC 플랫폼 (스케치 완료)**.
 

@@ -20,8 +20,15 @@ variable "key_name" {
 }
 
 variable "instance_type" {
-  type    = string
-  default = "t3.medium"
+  type        = string
+  description = "Use t3.micro/t2.micro for Free Tier lab; larger types may incur charges"
+  default     = "t3.micro"
+}
+
+variable "root_volume_gb" {
+  type        = number
+  description = "Root EBS size (GiB). Free Tier lab: keep <= 20"
+  default     = 8
 }
 
 variable "allowed_ssh_cidrs" {
@@ -36,8 +43,9 @@ variable "allowed_http_cidrs" {
 }
 
 variable "use_eip" {
-  type    = bool
-  default = true
+  type        = bool
+  description = "Elastic IP — free only while attached to running instance; free-tier lab default false"
+  default     = false
 }
 
 variable "enable_compute" {

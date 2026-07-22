@@ -1,8 +1,5 @@
 # CloudLab
 
-> 이 README는 저장소 루트가 아닌 **`.github/README.md`** 에 유지한다 (GitHub가 루트 / `.github` / `docs` README를 인식).
-
-
 ### Self-Hosted DevOps Platform
 
 <p align="center">

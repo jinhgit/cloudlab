@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 7 완료 — Prometheus 스크레이프 · Grafana · Alertmanager |
+| **현재 단계** | Step 8 완료 — Loki · Promtail 로그 수집 |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -495,28 +495,21 @@ CloudLab Monitoring 페이지(1차 UI)는 Step 10에서 Prometheus API 연동.
 
 ## 11. 로그 수집 구성
 
-```text
-App / Container / Pod stdout
-        ↓
-     Promtail
-        ↓
-       Loki
-        ↓
-  Platform API (/api/logs)
-        ↓
-  CloudLab Logs 페이지
+| Component | Port | 역할 |
+|-----------|------|------|
+| Loki | 3100 | 로그 저장 · Query API |
+| Promtail | 9080 | Docker SD → Loki push |
+| Grafana | 3001 | Explore (Loki DS) |
+
+```bash
+./scripts/logging-up.sh
+curl -s http://localhost:3100/ready
+# LogQL: {compose_service="backend"}
 ```
 
-### Logs 페이지 기능
+상세: [docs/logging.md](../docs/logging.md)
 
-| 기능 | 설명 |
-|------|------|
-| 필터 | Container, Namespace, Level, Date, Keyword |
-| 스트리밍 | 실시간 로그 + Auto Scroll |
-| 다운로드 | 현재 검색 결과 저장 |
-| 연동 | 장애 구간 · 복구 구간 확인 (면접 데모) |
-
-설정 파일 위치: `logging/` (Step 8)
+CloudLab Logs 페이지 실연동은 Step 10.
 
 ---
 
@@ -732,7 +725,7 @@ curl -s localhost:8080/actuator/health
 | 5 | Docker Compose | **Done** |
 | 6 | Kubernetes (k3s) | **Done** |
 | 7 | Monitoring | **Done** |
-| 8 | Logging | Pending |
+| 8 | Logging | **Done** |
 | 9 | CI/CD | Pending |
 | 10 | Dashboard 실연동 | Pending |
 | 11 | 테스트 | Pending |

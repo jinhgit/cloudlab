@@ -11,7 +11,7 @@ Follow PRD §23. Do not skip steps.
 | 5. Docker Compose | **done** | postgres/redis/backend/frontend stack |
 | 6. Kubernetes | **done** | k3s manifests + Helm chart + apply scripts |
 | 7. Monitoring | **done** | Prometheus scrape + Grafana + alert rules |
-| 8. Logging | pending | Loki + Promtail |
+| 8. Logging | **done** | Loki + Promtail + Grafana Loki DS |
 | 9. CI/CD | pending | GitHub Actions |
 | 10. Dashboard wiring | pending | real adapters |
 | 11. Tests | pending | unit + integration critical paths |

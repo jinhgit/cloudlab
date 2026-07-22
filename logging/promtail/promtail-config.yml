@@ -1,0 +1,48 @@
+# CloudLab Promtail — scrape Docker container logs via Docker service discovery
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    batchwait: 1s
+    batchsize: 1048576
+    timeout: 10s
+
+scrape_configs:
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: status
+            values: ["running"]
+    relabel_configs:
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: container
+      - source_labels: ["__meta_docker_container_id"]
+        target_label: container_id
+      - source_labels: ["__meta_docker_container_log_stream"]
+        target_label: stream
+      - source_labels: ["__meta_docker_container_label_com_docker_compose_service"]
+        target_label: compose_service
+      - source_labels: ["__meta_docker_container_label_com_docker_compose_project"]
+        target_label: compose_project
+      # Only CloudLab compose project
+      - source_labels: ["compose_project"]
+        regex: "cloudlab"
+        action: keep
+    pipeline_stages:
+      - docker: {}
+      - regex:
+          expression: '.*(?P<level>(?i)(ERROR|WARN|WARNING|INFO|DEBUG|TRACE|FATAL)).*'
+      - labels:
+          level:
+      - static_labels:
+          job: cloudlab-docker
+          cluster: cloudlab-local

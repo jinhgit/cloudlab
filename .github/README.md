@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 8 완료 — Loki · Promtail 로그 수집 |
+| **현재 단계** | Step 9 완료 — GitHub Actions CI/CD 파이프라인 |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -425,49 +425,24 @@ kubectl -n cloudlab get pods
 
 ## 9. CI/CD 파이프라인
 
-<p align="center">
-  <img src="../docs/assets/cicd-pipeline.svg" alt="CloudLab CI/CD Pipeline" width="920"/>
-</p>
-
-### 9.1 파이프라인 흐름
-
 ```text
-GitHub Push
-    ↓
-GitHub Actions
-    ↓
-Test
-    ↓
-Gradle Build
-    ↓
-Docker Build
-    ↓
-Registry Push (Docker Hub 등)
-    ↓
-Deploy (SSH 또는 in-cluster apply)
-    ↓
-Rolling Update
-    ↓
-Health Check
-    ↓
-Discord Notification
+Push/PR → CI (test · build)
+main    → CD (image push · optional SSH deploy · health · Discord)
 ```
 
-### 9.2 브랜치 정책 (목표)
+| Workflow | 파일 |
+|----------|------|
+| CI | [`.github/workflows/ci.yml`](workflows/ci.yml) |
+| CD | [`.github/workflows/cd.yml`](workflows/cd.yml) |
 
-| 트리거 | 동작 |
-|--------|------|
-| **Pull Request** | Test + Build (배포 제외) |
-| **main (또는 release)** | 전체 파이프라인 + 자동 배포 |
+```bash
+# 필수 secrets (레지스트리 push)
+gh secret set DOCKERHUB_USERNAME
+gh secret set DOCKERHUB_TOKEN
+# 선택: DEPLOY_HOST, DEPLOY_SSH_KEY, DISCORD_WEBHOOK_URL
+```
 
-### 9.3 Dashboard 연동
-
-- **Deployments** 페이지: 최근 워크플로, Commit, Author, Duration, Branch, Status  
-- 액션: **Deploy Latest**, **Rollback**, **View Logs**  
-- **WebSocket**으로 배포 진행률 표시  
-
-워크플로 파일(`.github/workflows/*`)은 **Step 9** 에서 추가한다.  
-(현재 GitHub OAuth에 `workflow` scope 가 필요할 수 있음: `gh auth refresh -s workflow`)
+상세: [docs/cicd.md](../docs/cicd.md)
 
 ---
 
@@ -726,7 +701,7 @@ curl -s localhost:8080/actuator/health
 | 6 | Kubernetes (k3s) | **Done** |
 | 7 | Monitoring | **Done** |
 | 8 | Logging | **Done** |
-| 9 | CI/CD | Pending |
+| 9 | CI/CD | **Done** |
 | 10 | Dashboard 실연동 | Pending |
 | 11 | 테스트 | Pending |
 | 12 | README/문서 최종 정리 | Pending |

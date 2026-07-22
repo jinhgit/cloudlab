@@ -1,0 +1,87 @@
+# Production-oriented compose for remote deploy (CD).
+# Images come from registry (override via BACKEND_IMAGE / FRONTEND_IMAGE).
+# Usage on server:
+#   export BACKEND_IMAGE=user/cloudlab-backend:abc1234
+#   export FRONTEND_IMAGE=user/cloudlab-frontend:abc1234
+#   docker compose -f docker-compose.prod.yml up -d
+
+name: cloudlab
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cloudlab}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - cloudlab_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cloudlab} -d ${POSTGRES_DB:-cloudlab}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [cloudlab]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - cloudlab_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [cloudlab]
+
+  backend:
+    image: ${BACKEND_IMAGE:-cloudlab-backend:latest}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: compose
+      SERVER_PORT: 8080
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-cloudlab}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      CLOUDLAB_CORS_ORIGINS: ${CLOUDLAB_CORS_ORIGINS:-http://localhost:3000}
+      CLOUDLAB_WAIT_FOR: postgres:5432 redis:6379
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    networks: [cloudlab]
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-cloudlab-frontend:latest}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks: [cloudlab]
+
+networks:
+  cloudlab:
+    name: cloudlab-net
+
+volumes:
+  cloudlab_pg_data:
+  cloudlab_redis_data:

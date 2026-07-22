@@ -1,53 +1,57 @@
 # Interview Demo Scenario (5 minutes)
 
+> **운영 플레이북(최신):** [demo-playbook.md](./demo-playbook.md)  
+> **원커맨드:** `./scripts/demo-reset.sh` → `./scripts/demo-run.sh`
+
 Goal: show CloudLab as an **operations platform**, not a CRUD app.
+
+## One-shot prep
+
+```bash
+./scripts/demo-reset.sh
+./scripts/demo-capture-status.sh
+# optional Discord evidence
+# export DISCORD_WEBHOOK_URL=...
+# ./scripts/demo-discord-test.sh
+./scripts/demo-run.sh --preflight
+```
 
 ## Preconditions
 
-- [ ] Cloudflare Tunnel (or local) URL works
-- [ ] Dashboard login (ADMIN)
-- [ ] k3s workloads running (backend at minimum)
+- [ ] `./scripts/demo-reset.sh` green
+- [ ] Dashboard http://localhost:3000
 - [ ] Prometheus / Loki / Alertmanager healthy
-- [ ] Discord webhook configured
-- [ ] GitHub Actions secrets ready (registry, SSH/kube, Discord)
+- [ ] (Optional) Discord webhook for live alert
+- [ ] GitHub Actions recent CI success (README badge)
 
 ## Script
 
 | # | Action | What to say | What must appear |
 |---|--------|-------------|------------------|
-| 1 | Open Dashboard | “브라우저 하나로 서버·Pod·컨테이너를 봅니다.” | CPU/Mem, container count, pod count, recent items |
-| 2 | Push code to GitHub | “Push가 곧 배포 파이프라인입니다.” | Actions run started (GH UI or Deployments page) |
-| 3 | Watch Deployments page | “Rolling update 진행률을 플랫폼에서 추적합니다.” | stages / progress / success |
-| 4 | Monitoring page | “Prometheus 메트릭을 자체 대시보드에서 봅니다.” | CPU, memory, JVM live charts |
-| 5 | Delete backend pod | “강제 장애를 내고 복구를 증명합니다.” | Pod Terminating → Running |
-| 6 | Alerts + Discord | “Alertmanager가 운영 채널로 알림을 보냅니다.” | Firing alert + Discord message |
-| 7 | Logs page | “Loki로 장애·복구 구간 로그를 봅니다.” | restart / error / recovery lines |
-| 8 | Back to Dashboard | “서비스가 정상 복구된 것을 한 화면에서 확인합니다.” | green status, pod ready |
+| 1 | Open Dashboard | “브라우저 하나로 서버·컨테이너·관측을 봅니다.” | CPU/Mem, containers, integration badges |
+| 2 | GitHub Actions | “Push가 CI/CD 파이프라인입니다.” | 초록 런 + README badge |
+| 3 | Monitoring | “Prometheus를 자체 Dashboard 차트로.” | CPU/Memory charts |
+| 4 | Failure inject | “장애를 내고 복구를 증명합니다.” | Docker restart or pod delete |
+| 5 | Alerts + Discord | “운영 채널 알림까지 닫습니다.” | Alerts page + Discord screenshot |
+| 6 | Logs | “Loki로 같은 구간 로그.” | backend lines |
+| 7 | Dashboard close | “정상 복귀로 마무리.” | all up |
 
-## Timing Guide
-
-| Segment | Budget |
-|---------|--------|
-| 1 Dashboard overview | ~45s |
-| 2–3 CI/CD | ~90s |
-| 4 Metrics | ~45s |
-| 5–7 Failure inject + observe | ~90s |
-| 8 Close | ~30s |
-
-## Failure Injection Commands (operator)
+## Inject helpers
 
 ```bash
-# Example: delete backend pod (namespace/name as deployed)
-kubectl delete pod -n cloudlab -l app=cloudlab-backend
+# guided cues + optional restart
+./scripts/demo-run.sh --inject-docker-restart
+
+# k8s (if cluster available)
+kubectl -n cloudlab delete pod -l app.kubernetes.io/name=cloudlab-backend
 ```
 
-Prefer doing this **from the Dashboard Kubernetes page** if delete action is ready — that better proves the product.
+## Evidence folder
+
+`docs/assets/demo/` — status capture, snapshot SVG, PNG checklist.
 
 ## Backup Plan
 
-If live push is too slow for 5 minutes:
-
-1. Pre-trigger a workflow before the interview, or
-2. Use **Deploy Latest** from the Deployments page on an already-built image.
-
-Still explain the full pipeline from the README architecture diagram.
+1. Pre-open a successful Actions run tab.  
+2. Use committed `discord-alert.png` if live webhook unavailable.  
+3. Explain architecture diagram if a service is briefly down; `demo-reset.sh` recovers.

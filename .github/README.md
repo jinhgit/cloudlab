@@ -14,6 +14,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/jinhgit/cloudlab/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jinhgit/cloudlab/actions/workflows/ci.yml/badge.svg"/></a>
+  <a href="https://github.com/jinhgit/cloudlab/actions/workflows/cd.yml"><img alt="CD" src="https://github.com/jinhgit/cloudlab/actions/workflows/cd.yml/badge.svg"/></a>
+  <img alt="License" src="https://img.shields.io/badge/portfolio-CloudLab-111827"/>
+</p>
+
+<p align="center">
   <img alt="Java" src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk&logoColor=white"/>
   <img alt="Spring Boot" src="https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
   <img alt="Next.js" src="https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=next.js&logoColor=white"/>
@@ -26,10 +32,28 @@
 
 | | |
 |---|---|
-| **Version** | 1.0 (Steps 1–12 complete) |
+| **Version** | 1.0 (Steps 1–12 complete) + interview demo kit |
 | **Repo** | https://github.com/jinhgit/cloudlab |
 | **PRD** | [docs/PRD.md](../docs/PRD.md) |
 | **Status** | Self-hosted ops platform MVP — real adapters, Compose stack, CI/CD |
+| **5-min demo** | [docs/demo-playbook.md](../docs/demo-playbook.md) · `./scripts/demo-run.sh` |
+
+### Live demo evidence (auto-captured)
+
+<p align="center">
+  <img src="../docs/assets/demo/live-snapshot.svg" alt="CloudLab live demo snapshot" width="920"/>
+</p>
+
+<details>
+<summary>최신 API 스냅샷 · 캡처 방법</summary>
+
+- 상태 표: [docs/assets/demo/latest-status.md](../docs/assets/demo/latest-status.md)
+- 갱신: `./scripts/demo-capture-status.sh`
+- Discord 1회 전송: `./scripts/demo-discord-test.sh` → `docs/assets/demo/discord-alert.png` 저장
+- UI 스크린샷 체크리스트: [docs/assets/demo/README.md](../docs/assets/demo/README.md)
+
+</details>
+
 
 ---
 
@@ -442,16 +466,29 @@ Alert rules: backend down, target down, node CPU/memory pressure.
 
 ## 16. 면접 데모 (5분)
 
+### 원커맨드
+
+```bash
+./scripts/demo-reset.sh              # 스택 정상화
+./scripts/demo-run.sh --preflight    # 사전 점검
+./scripts/demo-run.sh                # 5분 큐 카드 (Enter로 시작)
+./scripts/demo-capture-status.sh     # 증거 스냅샷 갱신
+# Discord 실제 1회 (웹훅 필요)
+# export DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/...'
+# ./scripts/demo-discord-test.sh
+```
+
 | # | 액션 |
 |---|------|
 | 1 | Dashboard — CPU/Mem, containers, integrations badge |
-| 2 | GitHub push / Actions 화면 |
-| 3 | CD 이미지 빌드 · (옵션) 배포 |
-| 4 | Monitoring 실시간 차트 |
-| 5 | Pod/컨테이너 강제 삭제 |
-| 6 | Discord / Alerts |
-| 7 | Logs |
-| 8 | Dashboard 최종 정상 확인 |
+| 2 | GitHub Actions 초록 런 + README CI/CD 배지 |
+| 3 | Monitoring 실시간 차트 |
+| 4 | Docker restart 또는 Pod 삭제 (장애 주입) |
+| 5 | Alerts + Discord 메시지 |
+| 6 | Logs (Loki) |
+| 7 | Dashboard 정상 복귀 클로징 |
+
+전체 대본·백업 플랜: [docs/demo-playbook.md](../docs/demo-playbook.md)
 
 ---
 

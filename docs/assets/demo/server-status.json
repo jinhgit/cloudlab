@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "data": {
+    "prometheus": true,
+    "loki": true,
+    "alertmanager": true,
+    "docker": true,
+    "kubernetes": false,
+    "cpuPercent": 6.5,
+    "memoryPercent": 40.6,
+    "diskPercent": 0.0,
+    "containersRunning": 11,
+    "containersTotal": 11,
+    "podsTotal": 0,
+    "alertsFiring": 0,
+    "jvmHeapUsed": 93214184.0,
+    "jvmHeapMax": 3082813438.0
+  }
+}

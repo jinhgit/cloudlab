@@ -18,6 +18,9 @@ Thumbs.db
 secrets/
 **/kubeconfig
 **/kubeconfig-*
+# Kubernetes local secrets (never commit)
+kubernetes/manifests/02-secret.yaml
+**/02-secret.yaml
 
 # Node / Next.js
 node_modules/

@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 5 완료 — Docker Compose 로컬 스택 (pg/redis/api/ui) |
+| **현재 단계** | Step 6 완료 — k3s 매니페스트 · Helm · NodePort/Ingress |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -398,33 +398,28 @@ Gradle/Next build → docker build → push registry → k3s pull → Rolling Up
 
 ## 8. Kubernetes 구성
 
-| 항목 | 선택 |
+| 항목 | 내용 |
 |------|------|
-| 배포 런타임 | **k3s** (단일 노드 Self-Hosted에 적합) |
-| 패키징 | Manifest + **Helm** (`kubernetes/`) |
-| 앱 배포 전략 | **Rolling Update** |
-| 복구 | Deployment 컨트롤러에 의한 Pod 재생성 (면접 데모 핵심) |
+| 런타임 | **k3s** (단일 노드 Self-Hosted) |
+| 매니페스트 | `kubernetes/manifests/` + `kustomization.yaml` |
+| Helm | `kubernetes/helm/cloudlab/` |
+| 문서 | [docs/kubernetes.md](../docs/kubernetes.md) |
 
-### 목표 리소스 (개념)
-
-```text
-Namespace: cloudlab
-├── Deployment/cloudlab-backend
-├── Deployment/cloudlab-frontend   (또는 edge 뒤에서 정적/SSR)
-├── Service (ClusterIP)
-├── Ingress / 외부는 Cloudflare Tunnel + Nginx
-└── (optional) Platform 관측 컴포넌트
+```bash
+./scripts/k8s-import-images.sh local
+./scripts/k8s-apply.sh manifests   # 또는 helm
+kubectl -n cloudlab get pods
+# NodePort UI :30080 · API :30088
 ```
 
-### Dashboard에서 제공하는 K8s 기능
+| Workload | 역할 |
+|----------|------|
+| cloudlab-postgres / redis | 데이터 플레인 |
+| cloudlab-backend | Platform API (RollingUpdate, Actuator probes) |
+| cloudlab-frontend | Dashboard |
+| Ingress / NodePort | 외부 접근 |
 
-| 화면 | 기능 |
-|------|------|
-| Pod 목록 | Namespace, Status, Restart, CPU/Mem, Image, Node, Age |
-| Pod 상세 | Logs, Restart, Delete, Describe, Events |
-| Deployment | Replica/Ready, Restart, Rolling Update, Scale |
-
-매니페스트 본문은 Step 6 이후 `kubernetes/` 에 추가한다.
+면접 데모: `kubectl -n cloudlab delete pod -l app.kubernetes.io/name=cloudlab-backend` → 자동 복구
 
 ---
 
@@ -745,7 +740,7 @@ curl -s localhost:8080/actuator/health
 | 3 | Spring Boot | **Done** |
 | 4 | Next.js | **Done** |
 | 5 | Docker Compose | **Done** |
-| 6 | Kubernetes (k3s) | Pending |
+| 6 | Kubernetes (k3s) | **Done** |
 | 7 | Monitoring | Pending |
 | 8 | Logging | Pending |
 | 9 | CI/CD | Pending |

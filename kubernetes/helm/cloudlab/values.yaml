@@ -1,0 +1,118 @@
+# CloudLab Helm default values (k3s-friendly single node)
+
+nameOverride: ""
+fullnameOverride: "cloudlab"
+
+namespace: cloudlab
+
+global:
+  tz: Asia/Seoul
+  labels:
+    app.kubernetes.io/part-of: cloudlab
+
+images:
+  backend:
+    repository: cloudlab-backend
+    tag: local
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: cloudlab-frontend
+    tag: local
+    pullPolicy: IfNotPresent
+  postgres:
+    repository: postgres
+    tag: 16-alpine
+    pullPolicy: IfNotPresent
+  redis:
+    repository: redis
+    tag: 7-alpine
+    pullPolicy: IfNotPresent
+
+# Browser-facing CORS / API (NodePort defaults)
+corsOrigins: "http://localhost:30080"
+
+config:
+  springProfilesActive: compose
+  postgresDb: cloudlab
+  postgresUser: cloudlab
+  postgresHost: cloudlab-postgres
+  redisHost: cloudlab-redis
+
+# Provide via --set or Secret (never commit real values)
+secrets:
+  postgresPassword: "change-me"
+  redisPassword: ""
+  jwtSecret: "change-me-to-a-long-random-string"
+  create: true
+
+postgres:
+  enabled: true
+  storage: 5Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 512Mi
+
+redis:
+  enabled: true
+  storage: 1Gi
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+backend:
+  enabled: true
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 384Mi
+    limits:
+      cpu: "1"
+      memory: 768Mi
+  securityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+
+frontend:
+  enabled: true
+  replicas: 1
+  port: 3000
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  securityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+
+service:
+  backend:
+    type: ClusterIP
+  frontend:
+    type: ClusterIP
+
+nodePort:
+  enabled: true
+  frontend: 30080
+  backend: 30088
+
+ingress:
+  enabled: true
+  className: traefik
+  host: cloudlab.local
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web

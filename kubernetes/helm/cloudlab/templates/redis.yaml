@@ -1,0 +1,81 @@
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cloudlab-redis-pvc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: cloudlab-redis
+    {{- include "cloudlab.labels" . | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: {{ .Values.redis.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudlab-redis
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: cloudlab-redis
+    {{- include "cloudlab.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudlab-redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cloudlab-redis
+        app.kubernetes.io/part-of: cloudlab
+    spec:
+      containers:
+        - name: redis
+          image: "{{ .Values.images.redis.repository }}:{{ .Values.images.redis.tag }}"
+          imagePullPolicy: {{ .Values.images.redis.pullPolicy }}
+          args: ["redis-server", "--appendonly", "yes"]
+          ports:
+            - name: redis
+              containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cloudlab-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudlab-redis
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: cloudlab-redis
+    {{- include "cloudlab.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: cloudlab-redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis
+{{- end }}

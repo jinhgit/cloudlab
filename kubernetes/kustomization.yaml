@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cloudlab
+
+resources:
+  - manifests/00-namespace.yaml
+  - manifests/01-configmap.yaml
+  - manifests/10-postgres.yaml
+  - manifests/11-redis.yaml
+  - manifests/20-backend.yaml
+  - manifests/21-frontend.yaml
+  - manifests/30-ingress.yaml
+  - manifests/31-nodeport.yaml
+
+# Secret is created separately (scripts/k8s-create-secret.sh)
+# commonLabels applied carefully — avoid rewriting selectors on immutable fields via transformers
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: cloudlab
+    includeSelectors: false

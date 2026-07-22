@@ -1,0 +1,39 @@
+# k3s ships Traefik as default Ingress controller.
+# Host-based routing for local lab; adjust hosts / use NodePort services if preferred.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cloudlab
+  namespace: cloudlab
+  labels:
+    app.kubernetes.io/part-of: cloudlab
+  annotations:
+    # Traefik (k3s default) — keep simple; TLS via Cloudflare Tunnel later
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: cloudlab.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudlab-backend
+                port:
+                  number: 8080
+          - path: /actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudlab-backend
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudlab-frontend
+                port:
+                  number: 3000

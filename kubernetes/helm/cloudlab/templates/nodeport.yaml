@@ -1,0 +1,37 @@
+{{- if .Values.nodePort.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudlab-frontend-nodeport
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: cloudlab-frontend
+    {{- include "cloudlab.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: cloudlab-frontend
+  ports:
+    - name: http
+      port: {{ .Values.frontend.port }}
+      targetPort: http
+      nodePort: {{ .Values.nodePort.frontend }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudlab-backend-nodeport
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: cloudlab-backend
+    {{- include "cloudlab.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: cloudlab-backend
+  ports:
+    - name: http
+      port: {{ .Values.backend.port }}
+      targetPort: http
+      nodePort: {{ .Values.nodePort.backend }}
+{{- end }}

@@ -1,0 +1,14 @@
+apiVersion: v2
+name: cloudlab
+description: CloudLab self-hosted DevOps platform (Platform API + Dashboard)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - devops
+  - platform
+  - monitoring
+  - kubernetes
+home: https://github.com/jinhgit/cloudlab
+maintainers:
+  - name: CloudLab

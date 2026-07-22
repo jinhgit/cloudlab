@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudlab-config
+  namespace: cloudlab
+  labels:
+    app.kubernetes.io/part-of: cloudlab
+    app.kubernetes.io/name: cloudlab-config
+data:
+  TZ: "Asia/Seoul"
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: "compose"
+  POSTGRES_HOST: "cloudlab-postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "cloudlab"
+  POSTGRES_USER: "cloudlab"
+  REDIS_HOST: "cloudlab-redis"
+  REDIS_PORT: "6379"
+  CLOUDLAB_CORS_ORIGINS: "http://localhost:30080"
+  CLOUDLAB_WAIT_FOR: "cloudlab-postgres:5432 cloudlab-redis:6379"

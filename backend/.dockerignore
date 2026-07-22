@@ -1,0 +1,28 @@
+# Build outputs
+build/
+.gradle/
+out/
+bin/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local env & secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Tests (image build uses -x test; still exclude bulky reports)
+**/build/reports/
+**/build/test-results/
+
+# Git
+.git/
+.gitignore

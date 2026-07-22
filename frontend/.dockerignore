@@ -1,0 +1,27 @@
+# Dependencies & build
+node_modules/
+.next/
+out/
+dist/
+coverage/
+.turbo/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.log
+npm-debug.log*
+
+# Local env & secrets
+.env
+.env.*
+!.env.example
+
+# Git / tests
+.git/
+.gitignore
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx

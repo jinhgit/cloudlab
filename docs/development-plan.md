@@ -5,7 +5,7 @@ Follow PRD §23. Do not skip steps.
 | Step | Status | Deliverable |
 |------|--------|-------------|
 | 1. Project structure | **done** | folders, PRD, AGENTS, README skeleton |
-| 2. Docker | pending | `docker/` Dockerfiles |
+| 2. Docker | **done** | Dockerfiles, entrypoint, ignore, docs/docker.md |
 | 3. Spring Boot | pending | bootable API + `/actuator/health` |
 | 4. Next.js | pending | dark shell + sidebar routes |
 | 5. Docker Compose | pending | local stack up |

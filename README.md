@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 1 완료 — PRD · 구조 · 문서 골격 (앱 런타임은 Step 2+ 진행) |
+| **현재 단계** | Step 2 완료 — Docker 이미지 초안 (앱 런타임 빌드는 Step 3–4 이후) |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](docs/PRD.md) |
 
@@ -366,21 +366,33 @@ PRD Development Rules:
 
 | 경로 | 내용 |
 |------|------|
-| `docker/` | Backend / Frontend 등 Dockerfile |
-| Compose (예정) | 로컬·단일 호스트에서 API, UI, DB, Redis, (선택) 관측 스택 |
+| [`docker/Dockerfile.backend`](docker/Dockerfile.backend) | Spring Boot API (Java 21, multi-stage, non-root 10001) |
+| [`docker/Dockerfile.frontend`](docker/Dockerfile.frontend) | Next.js Dashboard (Node 22, standalone, non-root 10001) |
+| [`docker/scripts/backend-entrypoint.sh`](docker/scripts/backend-entrypoint.sh) | `JAVA_OPTS` · 의존 서비스 대기 |
+| [`scripts/docker-build.sh`](scripts/docker-build.sh) | 루트 컨텍스트 빌드 헬퍼 |
+| Compose (Step 5) | API, UI, DB, Redis, (선택) 관측 스택 |
+
+설계 문서: [docs/docker.md](docs/docker.md)
 
 ### 설계 포인트
 
-- **멀티 스테이지 빌드**로 런타임 이미지 최소화 (Step 2+)
+- **멀티 스테이지 빌드**로 런타임 이미지 최소화
 - Platform API 컨테이너만 `docker.sock` / kubeconfig 마운트 (프론트엔드는 불가)
 - 이미지 태그: **`git SHA`** 기본, `main` 에 한해 `latest` 병행
+- HEALTHCHECK 내장 (backend TCP/port, frontend HTTP)
+
+```bash
+# Step 3/4 앱 소스 준비 후
+./scripts/docker-build.sh backend local
+./scripts/docker-build.sh frontend local
+```
 
 ```text
 # 개념적 이미지 흐름
 Gradle/Next build → docker build → push registry → k3s pull → Rolling Update
 ```
 
-상세 파일은 Step 2 · Step 5 에서 `docker/` 및 Compose 파일로 채워진다.
+> Step 2 완료: Dockerfile 초안. **실제 이미지 빌드 성공은 Step 3(backend) · Step 4(frontend) 이후.**
 
 ---
 
@@ -727,7 +739,7 @@ curl -s localhost:8080/actuator/health
 | Step | 내용 | 상태 |
 |------|------|------|
 | 1 | 프로젝트 구조 · PRD · README | **Done** |
-| 2 | Docker | Pending |
+| 2 | Docker | **Done** |
 | 3 | Spring Boot | Pending |
 | 4 | Next.js | Pending |
 | 5 | Docker Compose | Pending |

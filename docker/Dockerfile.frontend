@@ -1,0 +1,79 @@
+# CloudLab Dashboard (Next.js / TypeScript)
+# Build context: repository root
+#   docker build -f docker/Dockerfile.frontend -t cloudlab-frontend:local \
+#     --build-arg NEXT_PUBLIC_API_URL=http://localhost:8080 \
+#     --build-arg NEXT_PUBLIC_WS_URL=ws://localhost:8080/ws .
+#
+# Requires Step 4 artifacts under frontend/ (package.json + Next.js app).
+# Production expects next.config output: 'standalone'.
+
+# syntax=docker/dockerfile:1.7
+
+ARG NODE_VERSION=22
+
+# ─── Dependencies ────────────────────────────────────────────────────────────
+FROM node:${NODE_VERSION}-alpine AS deps
+
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+COPY frontend/package.json frontend/package-lock.json* frontend/pnpm-lock.yaml* frontend/yarn.lock* ./
+
+# Prefer npm ci when lockfile exists
+RUN if [ -f package-lock.json ]; then npm ci; \
+    elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable && pnpm i --frozen-lockfile; \
+    else npm install; \
+    fi
+
+# ─── Build ───────────────────────────────────────────────────────────────────
+FROM node:${NODE_VERSION}-alpine AS builder
+
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1 \
+    NODE_ENV=production
+
+ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+ARG NEXT_PUBLIC_WS_URL=ws://localhost:8080/ws
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+    NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY frontend/ .
+
+RUN npm run build
+
+# ─── Runtime ─────────────────────────────────────────────────────────────────
+FROM node:${NODE_VERSION}-alpine AS runtime
+
+LABEL org.opencontainers.image.title="cloudlab-frontend" \
+      org.opencontainers.image.description="CloudLab Dashboard (Next.js)" \
+      org.opencontainers.image.source="https://github.com/jinhgit/cloudlab" \
+      org.opencontainers.image.vendor="CloudLab"
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    TZ=Asia/Seoul
+
+RUN addgroup --system --gid 10001 cloudlab \
+    && adduser --system --uid 10001 --ingroup cloudlab cloudlab \
+    && mkdir -p /app \
+    && chown -R cloudlab:cloudlab /app
+
+# Next.js standalone output layout
+COPY --from=builder --chown=cloudlab:cloudlab /app/public ./public
+COPY --from=builder --chown=cloudlab:cloudlab /app/.next/standalone ./
+COPY --from=builder --chown=cloudlab:cloudlab /app/.next/static ./.next/static
+
+USER cloudlab
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["node", "-e", "require('http').get('http://127.0.0.1:3000/',(r)=>process.exit(r.statusCode&&r.statusCode<500?0:1)).on('error',()=>process.exit(1))"]
+
+CMD ["node", "server.js"]

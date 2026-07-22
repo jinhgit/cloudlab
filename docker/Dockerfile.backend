@@ -1,0 +1,78 @@
+# CloudLab Platform API (Spring Boot / Java 21)
+# Build context: repository root
+#   docker build -f docker/Dockerfile.backend -t cloudlab-backend:local .
+#
+# Requires Step 3 artifacts under backend/ (Gradle Wrapper + Spring Boot).
+
+# syntax=docker/dockerfile:1.7
+
+ARG JAVA_VERSION=21
+ARG GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true"
+
+# ─── Build ───────────────────────────────────────────────────────────────────
+FROM eclipse-temurin:${JAVA_VERSION}-jdk-jammy AS builder
+
+ARG GRADLE_OPTS
+ENV GRADLE_OPTS=${GRADLE_OPTS} \
+    LANG=C.UTF-8
+
+WORKDIR /workspace
+
+# Dependency layer cache: copy build scripts first
+COPY backend/gradlew backend/gradlew
+COPY backend/gradle backend/gradle
+COPY backend/settings.gradle.kts backend/build.gradle.kts backend/
+
+# Normalize line endings / execute bit (Windows checkout 대비)
+RUN chmod +x backend/gradlew
+
+WORKDIR /workspace/backend
+
+# Download dependencies (no sources yet — cache friendly)
+# Step 3 이전에는 이 단계가 실패할 수 있음 → 전체 빌드는 bootJar에서 확정
+RUN ./gradlew dependencies --no-daemon || true
+
+# Application sources
+COPY backend/src ./src
+
+# Produce executable Spring Boot jar (tests run in CI, not image build)
+RUN ./gradlew bootJar --no-daemon -x test \
+    && JAR="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-plain.jar' | head -n1)" \
+    && test -n "$JAR" \
+    && cp "$JAR" /workspace/app.jar
+
+# ─── Runtime ─────────────────────────────────────────────────────────────────
+FROM eclipse-temurin:${JAVA_VERSION}-jre-jammy AS runtime
+
+LABEL org.opencontainers.image.title="cloudlab-backend" \
+      org.opencontainers.image.description="CloudLab Platform API (Spring Boot)" \
+      org.opencontainers.image.source="https://github.com/jinhgit/cloudlab" \
+      org.opencontainers.image.vendor="CloudLab"
+
+ENV TZ=Asia/Seoul \
+    LANG=C.UTF-8 \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom" \
+    SERVER_PORT=8080 \
+    SPRING_PROFILES_ACTIVE=prod
+
+# Non-root user (UID fixed for k8s securityContext)
+RUN groupadd --system --gid 10001 cloudlab \
+    && useradd --system --uid 10001 --gid cloudlab --home-dir /app --shell /usr/sbin/nologin cloudlab \
+    && mkdir -p /app /app/logs /home/cloudlab/.kube \
+    && chown -R cloudlab:cloudlab /app /home/cloudlab
+
+WORKDIR /app
+
+COPY --from=builder --chown=cloudlab:cloudlab /workspace/app.jar /app/app.jar
+COPY --chmod=755 docker/scripts/backend-entrypoint.sh /app/entrypoint.sh
+
+USER cloudlab
+
+EXPOSE 8080
+
+# Actuator health (Step 3에서 활성화)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/${SERVER_PORT:-8080} || exit 1"]
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["java", "-jar", "/app/app.jar"]

@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 3 완료 — Spring Boot Platform API 기동 · `/actuator/health` |
+| **현재 단계** | Step 4 완료 — Next.js Dashboard 다크 셸 · 사이드바 라우트 |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -334,7 +334,8 @@ cd backend && ./gradlew bootRun
 # 4) 로컬 풀 스택 (Step 5 Docker Compose 이후)
 # docker compose up -d --build
 
-# 5) Dashboard (Step 4 이후)
+# 5) Dashboard (Step 4)
+# cd frontend && cp .env.example .env.local && npm install && npm run dev
 # open http://localhost:3000
 ```
 
@@ -746,7 +747,7 @@ curl -s localhost:8080/actuator/health
 | 1 | 프로젝트 구조 · PRD · README | **Done** |
 | 2 | Docker | **Done** |
 | 3 | Spring Boot | **Done** |
-| 4 | Next.js | Pending |
+| 4 | Next.js | **Done** |
 | 5 | Docker Compose | Pending |
 | 6 | Kubernetes (k3s) | Pending |
 | 7 | Monitoring | Pending |
@@ -780,6 +781,7 @@ CloudLab **v2** = **Infrastructure as Code** 플랫폼으로 확장
 | Product Requirements (PRD) | [docs/PRD.md](../docs/PRD.md) |
 | Architecture | [docs/architecture.md](../docs/architecture.md) |
 | Backend (Step 3) | [docs/backend.md](../docs/backend.md) |
+| Frontend (Step 4) | [docs/frontend.md](../docs/frontend.md) |
 | API Contract | [docs/api-contract.md](../docs/api-contract.md) |
 | Demo Scenario | [docs/demo-scenario.md](../docs/demo-scenario.md) |
 | Development Plan | [docs/development-plan.md](../docs/development-plan.md) |

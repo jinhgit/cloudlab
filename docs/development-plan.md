@@ -7,7 +7,7 @@ Follow PRD §23. Do not skip steps.
 | 1. Project structure | **done** | folders, PRD, AGENTS, README skeleton |
 | 2. Docker | **done** | Dockerfiles, entrypoint, ignore, docs/docker.md |
 | 3. Spring Boot | **done** | bootable API + actuator/api health + tests |
-| 4. Next.js | pending | dark shell + sidebar routes |
+| 4. Next.js | **done** | dark shell + sidebar routes + build OK |
 | 5. Docker Compose | pending | local stack up |
 | 6. Kubernetes | pending | k3s manifests / Helm |
 | 7. Monitoring | pending | Prometheus scrape path |

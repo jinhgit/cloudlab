@@ -69,7 +69,7 @@ docker build -f docker/Dockerfile.frontend -t cloudlab-frontend:local \
 | 2 (현재) | Dockerfile · entrypoint · ignore | 초안 완료, **앱 소스 전 빌드 실패 정상** |
 | 3 | `backend/` Spring Boot + Gradle Wrapper | `cloudlab-backend` 빌드 가능 |
 | 4 | `frontend/` Next.js + `output: 'standalone'` | `cloudlab-frontend` 빌드 가능 |
-| 5 | Compose | 로컬 스택 기동 |
+| 5 | Compose | 로컬 스택 기동 → 완료 (`docker-compose.yml`, [compose.md](./compose.md)) |
 
 ## 태그 전략 (CI, Step 9)
 

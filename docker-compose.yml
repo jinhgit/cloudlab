@@ -1,0 +1,136 @@
+# CloudLab local stack (Step 5)
+# Usage (repo root):
+#   cp .env.example .env
+#   docker compose up -d --build
+#   curl http://localhost:8080/actuator/health
+#   open http://localhost:3000
+#
+# Services: postgres · redis · backend · frontend
+
+name: cloudlab
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudlab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cloudlab}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      TZ: ${TZ:-Asia/Seoul}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - cloudlab_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cloudlab} -d ${POSTGRES_DB:-cloudlab}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - cloudlab
+
+  redis:
+    image: redis:7-alpine
+    container_name: cloudlab-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - cloudlab_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - cloudlab
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    image: cloudlab-backend:local
+    container_name: cloudlab-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Asia/Seoul}
+      SERVER_PORT: 8080
+      SPRING_PROFILES_ACTIVE: compose
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-cloudlab}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string}
+      CLOUDLAB_CORS_ORIGINS: ${CLOUDLAB_CORS_ORIGINS:-http://localhost:3000}
+      CLOUDLAB_WAIT_FOR: postgres:5432 redis:6379
+      JAVA_OPTS: ${JAVA_OPTS:--XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    networks:
+      - cloudlab
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+      args:
+        # Browser-facing URLs (host machine), not Docker internal DNS
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:8080/ws}
+    image: cloudlab-frontend:local
+    container_name: cloudlab-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Asia/Seoul}
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/',(r)=>process.exit(r.statusCode&&r.statusCode<500?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+    networks:
+      - cloudlab
+
+networks:
+  cloudlab:
+    name: cloudlab-net
+    driver: bridge
+
+volumes:
+  cloudlab_pg_data:
+    name: cloudlab_pg_data
+  cloudlab_redis_data:
+    name: cloudlab_redis_data

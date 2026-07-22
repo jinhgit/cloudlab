@@ -8,7 +8,7 @@ Follow PRD §23. Do not skip steps.
 | 2. Docker | **done** | Dockerfiles, entrypoint, ignore, docs/docker.md |
 | 3. Spring Boot | **done** | bootable API + actuator/api health + tests |
 | 4. Next.js | **done** | dark shell + sidebar routes + build OK |
-| 5. Docker Compose | pending | local stack up |
+| 5. Docker Compose | **done** | postgres/redis/backend/frontend stack |
 | 6. Kubernetes | pending | k3s manifests / Helm |
 | 7. Monitoring | pending | Prometheus scrape path |
 | 8. Logging | pending | Loki + Promtail |

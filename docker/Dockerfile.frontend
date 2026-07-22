@@ -65,6 +65,7 @@ RUN addgroup --system --gid 10001 cloudlab \
     && chown -R cloudlab:cloudlab /app
 
 # Next.js standalone output layout
+RUN mkdir -p ./public ./.next/static
 COPY --from=builder --chown=cloudlab:cloudlab /app/public ./public
 COPY --from=builder --chown=cloudlab:cloudlab /app/.next/standalone ./
 COPY --from=builder --chown=cloudlab:cloudlab /app/.next/static ./.next/static

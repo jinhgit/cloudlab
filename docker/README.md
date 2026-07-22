@@ -29,6 +29,11 @@ docker build -f docker/Dockerfile.frontend -t cloudlab-frontend:local .
 - **Step 2 (done):** Dockerfile 초안 · ignore · 문서
 - **Step 3 이후:** backend 소스 존재 시 `cloudlab-backend` 빌드 성공
 - **Step 4 이후:** frontend 소스 + `output: 'standalone'` 시 `cloudlab-frontend` 빌드 성공
-- **Step 5:** Docker Compose로 스택 기동
+- **Step 5 (done):** Docker Compose 스택 — 루트 `docker-compose.yml` · [docs/compose.md](../docs/compose.md)
 
-Step 3/4 이전에 `docker build` 가 실패하는 것은 정상이다 (앱 소스 미구현).
+```bash
+# repo root
+./scripts/compose-up.sh
+docker compose ps
+curl -s http://localhost:8080/actuator/health
+```

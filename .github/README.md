@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 4 완료 — Next.js Dashboard 다크 셸 · 사이드바 라우트 |
+| **현재 단계** | Step 5 완료 — Docker Compose 로컬 스택 (pg/redis/api/ui) |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -323,20 +323,16 @@ cd cloudlab
 
 # 2) 환경변수
 cp .env.example .env
-# .env 의 시크릿 값을 로컬/서버에 맞게 수정
 
-# 3) Backend only (Step 3 — Java 21)
-export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
-cd backend && ./gradlew bootRun
-# curl http://localhost:8080/actuator/health
-# curl http://localhost:8080/api/health
+# 3) 권장: Docker Compose 풀 스택 (Step 5)
+./scripts/compose-up.sh
+# Dashboard  http://localhost:3000
+# API        http://localhost:8080/actuator/health
 
-# 4) 로컬 풀 스택 (Step 5 Docker Compose 이후)
-# docker compose up -d --build
-
-# 5) Dashboard (Step 4)
+# 4) 또는 개별 개발
+# export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+# cd backend && ./gradlew bootRun
 # cd frontend && cp .env.example .env.local && npm install && npm run dev
-# open http://localhost:3000
 ```
 
 ### 6.3 환경변수 요약
@@ -374,7 +370,7 @@ PRD Development Rules:
 | [`docker/Dockerfile.frontend`](../docker/Dockerfile.frontend) | Next.js Dashboard (Node 22, standalone, non-root 10001) |
 | [`docker/scripts/backend-entrypoint.sh`](../docker/scripts/backend-entrypoint.sh) | `JAVA_OPTS` · 의존 서비스 대기 |
 | [`scripts/docker-build.sh`](../scripts/docker-build.sh) | 루트 컨텍스트 빌드 헬퍼 |
-| Compose (Step 5) | API, UI, DB, Redis, (선택) 관측 스택 |
+| [`docker-compose.yml`](../docker-compose.yml) | postgres · redis · backend · frontend (Step 5 **done**) |
 
 설계 문서: [docs/docker.md](../docs/docker.md)
 
@@ -748,7 +744,7 @@ curl -s localhost:8080/actuator/health
 | 2 | Docker | **Done** |
 | 3 | Spring Boot | **Done** |
 | 4 | Next.js | **Done** |
-| 5 | Docker Compose | Pending |
+| 5 | Docker Compose | **Done** |
 | 6 | Kubernetes (k3s) | Pending |
 | 7 | Monitoring | Pending |
 | 8 | Logging | Pending |
@@ -782,6 +778,7 @@ CloudLab **v2** = **Infrastructure as Code** 플랫폼으로 확장
 | Architecture | [docs/architecture.md](../docs/architecture.md) |
 | Backend (Step 3) | [docs/backend.md](../docs/backend.md) |
 | Frontend (Step 4) | [docs/frontend.md](../docs/frontend.md) |
+| Compose (Step 5) | [docs/compose.md](../docs/compose.md) |
 | API Contract | [docs/api-contract.md](../docs/api-contract.md) |
 | Demo Scenario | [docs/demo-scenario.md](../docs/demo-scenario.md) |
 | Development Plan | [docs/development-plan.md](../docs/development-plan.md) |

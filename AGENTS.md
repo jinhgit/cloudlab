@@ -22,6 +22,48 @@ Authoritative requirements: [`docs/PRD.md`](docs/PRD.md).
 8. Prioritize **Observability, Security, Maintainability** over feature breadth.
 9. Java base package: `com.cloudlab`.
 10. API response envelope and roles: see PRD §16 and §21.
+11. **Git: 큼지막한 진행(Step 완료, 주요 기능 묶음, 문서/구조 전환)마다 commit + `git push` 자동 수행.** 사용자에게 매번 push 허가를 다시 묻지 않는다(이 문서가 사전 승인). force-push / `--force` / main 강제 덮어쓰기는 금지. remote가 없으면 생성·연결 후 push.
+12. **커밋 메시지 언어: 한국어 메인.** prefix(`feat:` 등)는 유지. 제목·본문은 한국어로 작성하고, 기술 용어·경로·명령은 영어가 자연스러우면 영어 그대로 사용.
+
+## Git Commit & Push
+
+### When to commit + push
+
+| 시점 | 예 |
+|------|----|
+| Development Step 완료 | Step 2 Docker, Step 3 Spring Boot … |
+| 의미 있는 기능 단위 완료 | API 어댑터, 사이드바 골격, CI 파이프라인 |
+| 문서/정책 전환 | PRD 개정, AGENTS 규칙 추가 |
+
+자잘한 중간 수정만 있을 때는 묶어서 한 번에 커밋해도 된다. **Step exit criteria를 만족하면 반드시 push.**
+
+### Message format
+
+```text
+<prefix>: <한국어 요약 제목>
+
+<무엇을 왜 바꿨는지 2~5문장, 한국어>
+- 세부 bullet (경로, 명령, 기술명은 영어 OK)
+```
+
+예시:
+
+```text
+docs: CloudLab PRD·구조 부트스트랩 및 AI 개발 계약 추가
+
+포트폴리오용 운영 플랫폼 기준으로 PRD를 고정하고 Step 1 폴더 구조를 생성했다.
+- docs/PRD.md, architecture, demo-scenario
+- AGENTS.md에 커밋/푸시 자동화 규칙 명시
+```
+
+### Push procedure
+
+1. `git status` / `git diff` 확인
+2. 관련 파일만 stage (secret 제외)
+3. HEREDOC으로 commit message 작성
+4. `git pull --rebase` (remote에 새 커밋 있을 때)
+5. `git push -u origin HEAD` (또는 현재 브랜치)
+6. 사용자에게 커밋 제목·원격 URL·push 결과 요약 보고
 
 ## Current Step
 

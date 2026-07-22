@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" role="img" aria-label="CloudLab CI/CD Pipeline">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="320" fill="url(#bg3)"/>
+  <text x="40" y="40" fill="#f8fafc" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">CloudLab — CI/CD Pipeline</text>
+  <text x="40" y="64" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">GitHub Push → Build → Deploy → Health Check → Discord</text>
+
+  <!-- boxes row -->
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <rect x="30" y="120" width="100" height="70" rx="10" fill="#1e3a5f" stroke="#38bdf8"/>
+    <text x="80" y="150" text-anchor="middle" fill="#e0f2fe" font-size="12" font-weight="700">Push</text>
+    <text x="80" y="170" text-anchor="middle" fill="#7dd3fc" font-size="11">GitHub</text>
+
+    <rect x="160" y="120" width="100" height="70" rx="10" fill="#1e3a5f" stroke="#38bdf8"/>
+    <text x="210" y="150" text-anchor="middle" fill="#e0f2fe" font-size="12" font-weight="700">Actions</text>
+    <text x="210" y="170" text-anchor="middle" fill="#7dd3fc" font-size="11">CI Runner</text>
+
+    <rect x="290" y="120" width="100" height="70" rx="10" fill="#1e3a2f" stroke="#34d399"/>
+    <text x="340" y="150" text-anchor="middle" fill="#ecfdf5" font-size="12" font-weight="700">Test</text>
+    <text x="340" y="170" text-anchor="middle" fill="#6ee7b7" font-size="11">Unit/IT</text>
+
+    <rect x="420" y="120" width="100" height="70" rx="10" fill="#1e3a2f" stroke="#34d399"/>
+    <text x="470" y="150" text-anchor="middle" fill="#ecfdf5" font-size="12" font-weight="700">Build</text>
+    <text x="470" y="170" text-anchor="middle" fill="#6ee7b7" font-size="11">Gradle</text>
+
+    <rect x="550" y="120" width="100" height="70" rx="10" fill="#3b2f1e" stroke="#fbbf24"/>
+    <text x="600" y="150" text-anchor="middle" fill="#fef3c7" font-size="12" font-weight="700">Image</text>
+    <text x="600" y="170" text-anchor="middle" fill="#fcd34d" font-size="11">Docker Hub</text>
+
+    <rect x="680" y="120" width="100" height="70" rx="10" fill="#3b2f1e" stroke="#fbbf24"/>
+    <text x="730" y="150" text-anchor="middle" fill="#fef3c7" font-size="12" font-weight="700">Deploy</text>
+    <text x="730" y="170" text-anchor="middle" fill="#fcd34d" font-size="11">Rolling</text>
+
+    <rect x="810" y="120" width="100" height="70" rx="10" fill="#3b1e2f" stroke="#f472b6"/>
+    <text x="860" y="150" text-anchor="middle" fill="#fce7f3" font-size="12" font-weight="700">Verify</text>
+    <text x="860" y="170" text-anchor="middle" fill="#f9a8d4" font-size="11">Health+DC</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#64748b" stroke-width="2" fill="#64748b">
+    <line x1="130" y1="155" x2="155" y2="155"/><polygon points="160,155 152,151 152,159"/>
+    <line x1="260" y1="155" x2="285" y2="155"/><polygon points="290,155 282,151 282,159"/>
+    <line x1="390" y1="155" x2="415" y2="155"/><polygon points="420,155 412,151 412,159"/>
+    <line x1="520" y1="155" x2="545" y2="155"/><polygon points="550,155 542,151 542,159"/>
+    <line x1="650" y1="155" x2="675" y2="155"/><polygon points="680,155 672,151 672,159"/>
+    <line x1="780" y1="155" x2="805" y2="155"/><polygon points="810,155 802,151 802,159"/>
+  </g>
+
+  <text x="500" y="240" text-anchor="middle" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Dashboard Deployments 페이지에서 진행률(WebSocket) 실시간 확인</text>
+  <text x="500" y="270" text-anchor="middle" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Health Check 실패 시 배포 실패 처리 + Discord 알림 · 이미지 태그: git SHA (+ latest on main)</text>
+  <text x="500" y="300" text-anchor="middle" fill="#475569" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">PR: Test + Build only · main: full deploy pipeline</text>
+</svg>

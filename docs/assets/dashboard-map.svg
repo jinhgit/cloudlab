@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-label="CloudLab Dashboard Map">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="480" fill="url(#bg5)"/>
+  <text x="40" y="40" fill="#f8fafc" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">CloudLab — Dashboard IA</text>
+  <text x="40" y="64" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Vercel Dashboard + Grafana 감성 · Dark mode default</text>
+
+  <!-- sidebar -->
+  <rect x="40" y="90" width="200" height="350" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="60" y="120" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" font-weight="700">SIDEBAR</text>
+  <text x="60" y="150" fill="#f1f5f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">🏠 Dashboard</text>
+  <text x="60" y="178" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">☸ Kubernetes</text>
+  <text x="60" y="206" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">🐳 Docker</text>
+  <text x="60" y="234" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">🚀 Deployments</text>
+  <text x="60" y="262" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">📊 Monitoring</text>
+  <text x="60" y="290" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">📜 Logs</text>
+  <text x="60" y="318" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">🗄 Database</text>
+  <text x="60" y="346" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">⚡ Redis</text>
+  <text x="60" y="374" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">🚨 Alerts</text>
+  <text x="60" y="402" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">⚙ Settings</text>
+
+  <!-- main -->
+  <rect x="260" y="90" width="660" height="350" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="280" y="120" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" font-weight="700">HOME WIDGETS</text>
+
+  <rect x="280" y="140" width="140" height="70" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="350" y="170" text-anchor="middle" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">CPU</text>
+  <text x="350" y="190" text-anchor="middle" fill="#38bdf8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">%</text>
+
+  <rect x="440" y="140" width="140" height="70" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="510" y="170" text-anchor="middle" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Memory</text>
+  <text x="510" y="190" text-anchor="middle" fill="#34d399" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">used</text>
+
+  <rect x="600" y="140" width="140" height="70" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="670" y="170" text-anchor="middle" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Pods</text>
+  <text x="670" y="190" text-anchor="middle" fill="#fbbf24" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">count</text>
+
+  <rect x="760" y="140" width="140" height="70" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="830" y="170" text-anchor="middle" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Containers</text>
+  <text x="830" y="190" text-anchor="middle" fill="#f472b6" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">count</text>
+
+  <rect x="280" y="230" width="300" height="90" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="300" y="258" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Recent Deploys</text>
+  <text x="300" y="285" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">commit · status · duration</text>
+  <text x="300" y="305" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">GitHub Actions 연동</text>
+
+  <rect x="600" y="230" width="300" height="90" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="620" y="258" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Recent Alerts / Logs</text>
+  <text x="620" y="285" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Critical · Warning · Info</text>
+  <text x="620" y="305" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Loki last N lines</text>
+
+  <rect x="280" y="340" width="620" height="70" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="300" y="370" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Realtime: WebSocket (fallback Polling 5s) · JWT Auth (ADMIN / VIEWER)</text>
+  <text x="300" y="392" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Disk · Network · Uptime · Server Status 위젯 포함</text>
+</svg>

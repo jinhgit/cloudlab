@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-label="CloudLab Observability Flow">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="420" fill="url(#bg4)"/>
+  <text x="40" y="40" fill="#f8fafc" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">CloudLab — Observability Flow</text>
+  <text x="40" y="64" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Metrics · Logs · Alerts — all visible in Dashboard</text>
+
+  <!-- Sources -->
+  <rect x="40" y="100" width="200" height="240" rx="12" fill="#0f172a" stroke="#94a3b8"/>
+  <text x="140" y="130" text-anchor="middle" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">Sources</text>
+  <text x="60" y="165" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Node Exporter</text>
+  <text x="60" y="190" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">cAdvisor</text>
+  <text x="60" y="215" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Spring Actuator</text>
+  <text x="60" y="240" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">k3s / Pods</text>
+  <text x="60" y="265" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Container logs</text>
+  <text x="60" y="290" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">App stdout</text>
+
+  <!-- Collectors -->
+  <rect x="300" y="100" width="200" height="240" rx="12" fill="#0f172a" stroke="#f472b6"/>
+  <text x="400" y="130" text-anchor="middle" fill="#fce7f3" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">Collect / Store</text>
+  <text x="320" y="175" fill="#fbcfe8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Prometheus</text>
+  <text x="320" y="200" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">scrape metrics</text>
+  <text x="320" y="235" fill="#fbcfe8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Promtail → Loki</text>
+  <text x="320" y="260" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">ship logs</text>
+  <text x="320" y="295" fill="#fbcfe8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Alertmanager</text>
+  <text x="320" y="320" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">route alerts</text>
+
+  <!-- Consumers -->
+  <rect x="560" y="100" width="360" height="240" rx="12" fill="#0f172a" stroke="#34d399"/>
+  <text x="740" y="130" text-anchor="middle" fill="#ecfdf5" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700">Consumers</text>
+  <rect x="590" y="155" width="300" height="48" rx="8" fill="#064e3b"/>
+  <text x="740" y="185" text-anchor="middle" fill="#a7f3d0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">CloudLab Dashboard (1차 UI)</text>
+  <rect x="590" y="220" width="140" height="48" rx="8" fill="#1e3a5f"/>
+  <text x="660" y="250" text-anchor="middle" fill="#7dd3fc" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Grafana</text>
+  <rect x="750" y="220" width="140" height="48" rx="8" fill="#3b1e2f"/>
+  <text x="820" y="250" text-anchor="middle" fill="#f9a8d4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Discord</text>
+  <text x="740" y="310" text-anchor="middle" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Platform API가 Prometheus/Loki/AM 질의</text>
+
+  <!-- arrows -->
+  <g stroke="#64748b" stroke-width="2" fill="#64748b">
+    <line x1="240" y1="220" x2="295" y2="220"/><polygon points="300,220 292,216 292,224"/>
+    <line x1="500" y1="220" x2="555" y2="220"/><polygon points="560,220 552,216 552,224"/>
+  </g>
+
+  <text x="480" y="390" text-anchor="middle" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">면접 데모: Pod 삭제 → 자동 복구 → Alert → Logs → Dashboard 정상 확인</text>
+</svg>

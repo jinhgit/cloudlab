@@ -24,6 +24,7 @@ Authoritative requirements: [`docs/PRD.md`](docs/PRD.md).
 10. API response envelope and roles: see PRD §16 and §21.
 11. **Git: 큼지막한 진행(Step 완료, 주요 기능 묶음, 문서/구조 전환)마다 commit + `git push` 자동 수행.** 사용자에게 매번 push 허가를 다시 묻지 않는다(이 문서가 사전 승인). force-push / `--force` / main 강제 덮어쓰기는 금지. remote가 없으면 생성·연결 후 push.
 12. **커밋 메시지 언어: 한국어 메인.** prefix(`feat:` 등)는 유지. 제목·본문은 한국어로 작성하고, 기술 용어·경로·명령은 영어가 자연스러우면 영어 그대로 사용.
+13. **프로젝트 README 위치는 `.github/README.md` 고정.** 루트 `README.md`를 다시 만들지 않는다. 이미지/문서 링크는 `.github/` 기준 상대경로(`../docs/...`)를 쓴다.
 
 ## Git Commit & Push
 

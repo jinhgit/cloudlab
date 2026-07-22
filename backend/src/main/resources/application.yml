@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: cloudlab-backend
+  profiles:
+    default: local
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  info:
+    env:
+      enabled: true
+
+cloudlab:
+  version: 0.1.0-SNAPSHOT
+  cors:
+    allowed-origins: ${CLOUDLAB_CORS_ORIGINS:http://localhost:3000}
+
+logging:
+  level:
+    root: INFO
+    com.cloudlab: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: CloudLab Platform API
+    version: ${cloudlab.version}

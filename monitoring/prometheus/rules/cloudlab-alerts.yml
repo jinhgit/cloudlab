@@ -1,0 +1,55 @@
+groups:
+  - name: cloudlab.platform
+    rules:
+      - alert: CloudLabBackendDown
+        expr: up{job="cloudlab-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CloudLab backend is down"
+          description: "Prometheus cannot scrape cloudlab-backend for more than 1 minute."
+
+      - alert: CloudLabBackendHighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{job="cloudlab-backend",status=~"5.."}[5m]))
+            /
+          clamp_min(sum(rate(http_server_requests_seconds_count{job="cloudlab-backend"}[5m])), 0.001)
+            > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 5xx rate on Platform API"
+          description: "5xx ratio > 5% over 5m."
+
+  - name: cloudlab.infra
+    rules:
+      - alert: NodeHighCpu
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "Node CPU > 85% for 10 minutes."
+
+      - alert: NodeHighMemory
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Node memory usage > 90% for 10 minutes."
+
+      - alert: TargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Scrape target down ({{ $labels.job }})"
+          description: "Job {{ $labels.job }} instance {{ $labels.instance }} is down."

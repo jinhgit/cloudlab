@@ -75,7 +75,7 @@
 | **제품 유형** | 실무에서 Platform Engineer가 만드는 **내부 운영 플랫폼** 수준 |
 | **포지션** | Cloud / DevOps / Platform / SRE 취업 포트폴리오 |
 | **호스팅** | 단일 Ubuntu 서버 기준 Self-Hosted (유료 클라우드 관리형 서비스 의존 최소화) |
-| **현재 단계** | Step 6 완료 — k3s 매니페스트 · Helm · NodePort/Ingress |
+| **현재 단계** | Step 7 완료 — Prometheus 스크레이프 · Grafana · Alertmanager |
 | **저장소** | https://github.com/jinhgit/cloudlab |
 | **상세 요구사항** | [docs/PRD.md](../docs/PRD.md) |
 
@@ -473,33 +473,23 @@ Discord Notification
 
 ## 10. 모니터링 구성
 
-<p align="center">
-  <img src="../docs/assets/observability.svg" alt="CloudLab Observability Flow" width="920"/>
-</p>
+| Component | Port | 역할 |
+|-----------|------|------|
+| Prometheus | 9090 | scrape · rules |
+| Grafana | 3001 | 보조 대시보드 |
+| Alertmanager | 9093 | 알림 라우팅 |
+| Node Exporter | 9100 | 호스트 메트릭 |
+| cAdvisor | 8081 | 컨테이너 메트릭 |
+| Spring Actuator | `/actuator/prometheus` | JVM/HTTP |
 
-### 10.1 구성 요소
+```bash
+./scripts/monitoring-up.sh
+# targets: http://localhost:9090/targets
+```
 
-| Component | 역할 |
-|-----------|------|
-| **Prometheus** | 스크레이프 · 저장 · PromQL |
-| **Node Exporter** | 호스트 CPU/Mem/Disk/Network |
-| **cAdvisor** | 컨테이너 리소스 |
-| **Spring Actuator** | JVM Heap, GC, Threads, HTTP TPS/Latency |
-| **Grafana** | 보조 시각화 |
-| **CloudLab Monitoring 페이지** | **1차 사용자 대면 차트** (Recharts) |
+상세: [docs/monitoring.md](../docs/monitoring.md)
 
-### 10.2 Dashboard 필수 차트
-
-| Chart | 설명 |
-|-------|------|
-| CPU / Memory / Disk | 호스트·워크로드 |
-| Network RX / TX | 트래픽 |
-| JVM Heap / GC / Threads | 백엔드 런타임 |
-| HTTP TPS / Response Time | API 성능 |
-| DB Connections | 커넥션 풀 |
-| Docker / Pod Stats | 컨테이너·파드 단위 |
-
-설정 파일 위치: `monitoring/` (Step 7)
+CloudLab Monitoring 페이지(1차 UI)는 Step 10에서 Prometheus API 연동.
 
 ---
 
@@ -741,7 +731,7 @@ curl -s localhost:8080/actuator/health
 | 4 | Next.js | **Done** |
 | 5 | Docker Compose | **Done** |
 | 6 | Kubernetes (k3s) | **Done** |
-| 7 | Monitoring | Pending |
+| 7 | Monitoring | **Done** |
 | 8 | Logging | Pending |
 | 9 | CI/CD | Pending |
 | 10 | Dashboard 실연동 | Pending |

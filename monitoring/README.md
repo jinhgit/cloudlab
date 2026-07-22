@@ -1,5 +1,11 @@
 # monitoring/
 
-Prometheus, Grafana, Alertmanager, Node Exporter, cAdvisor configuration.
+Prometheus · Alertmanager · Grafana · Node Exporter · cAdvisor configs.
 
-Populated in **Development Step 7**.
+**Docs:** [docs/monitoring.md](../docs/monitoring.md)
+
+```bash
+../scripts/monitoring-up.sh
+# Prometheus http://localhost:9090/targets
+# Grafana    http://localhost:3001
+```

@@ -1,0 +1,37 @@
+# CloudLab Alertmanager
+# Discord: set DISCORD_WEBHOOK_URL in .env and restart alertmanager
+# (webhook URL is injected via env template at container start if using default receiver)
+
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default
+  group_by: ["alertname", "severity", "service"]
+  group_wait: 20s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers:
+        - severity = "critical"
+      receiver: default
+      continue: true
+    - matchers:
+        - severity = "warning"
+      receiver: default
+
+inhibit_rules:
+  - source_matchers:
+      - severity = "critical"
+    target_matchers:
+      - severity = "warning"
+    equal: ["alertname", "service"]
+
+receivers:
+  - name: default
+    # Local fallback: webhook is a no-op unless DISCORD is configured.
+    # When DISCORD_WEBHOOK_URL is set, scripts rewrite or use discord via webhook_configs.
+    webhook_configs:
+      - url: "http://127.0.0.1:9/devnull"
+        send_resolved: true
+        # Placeholder — replaced at runtime by entrypoint when webhook present is non-empty

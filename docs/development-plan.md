@@ -10,7 +10,7 @@ Follow PRD §23. Do not skip steps.
 | 4. Next.js | **done** | dark shell + sidebar routes + build OK |
 | 5. Docker Compose | **done** | postgres/redis/backend/frontend stack |
 | 6. Kubernetes | **done** | k3s manifests + Helm chart + apply scripts |
-| 7. Monitoring | pending | Prometheus scrape path |
+| 7. Monitoring | **done** | Prometheus scrape + Grafana + alert rules |
 | 8. Logging | pending | Loki + Promtail |
 | 9. CI/CD | pending | GitHub Actions |
 | 10. Dashboard wiring | pending | real adapters |

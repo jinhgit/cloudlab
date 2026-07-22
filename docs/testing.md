@@ -56,8 +56,28 @@ curl -s http://localhost:8080/api/server/status | jq .success
 curl -s http://localhost:8080/api/docker/containers | jq '.data|length'
 ```
 
+## E2E (Playwright · golden path)
+
+Compose UI smoke (not full regression).
+
+```bash
+# stack up first
+./scripts/demo-reset.sh
+
+cd frontend
+npm run test:e2e
+# first time browsers: cd ../e2e && npx playwright install chromium
+```
+
+| File | Coverage |
+|------|----------|
+| `e2e/dashboard-smoke.spec.ts` | `/` widgets · `/docker` · `/monitoring` |
+| `e2e/playwright.config.ts` | `BASE_URL` default `http://127.0.0.1:3000` |
+
+CI: **optional / manual** (avoid flaky PR gates). See `e2e/README.md`.
+
 ## Gaps (intentionally later)
 
-- Full browser E2E (Playwright) against Compose
+- Full multi-page E2E matrix
 - Contract tests against live Prometheus/Loki
 - JWT role matrix once auth is locked down

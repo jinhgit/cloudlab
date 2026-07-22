@@ -531,8 +531,11 @@ curl -s http://localhost:3100/ready
 # Backend
 cd backend && ./gradlew test
 
-# Frontend
+# Frontend unit
 cd frontend && npm test
+
+# E2E smoke (Compose UI must be up)
+./scripts/demo-reset.sh && cd frontend && npx playwright install chromium && npm run test:e2e
 
 # Script smoke
 ./scripts/ci/health-check.test.sh
@@ -542,6 +545,7 @@ cd frontend && npm test
 |------|------|
 | Backend | JUnit 5, MockMvc, Mockito |
 | Frontend | Vitest, Testing Library |
+| E2E | Playwright · `e2e/dashboard-smoke.spec.ts` (Compose UI) |
 | CI | Gradle test · npm test · health-check smoke |
 
 상세: [docs/testing.md](../docs/testing.md)

@@ -211,7 +211,7 @@ cloudlab/
 - (선택) Java 21, Node 22 — 로컬 IDE 개발용
 - (선택) kubectl / k3s — 클러스터 배포용
 
-### 풀 스택 (권장)
+### 풀 스택
 
 ```bash
 git clone https://github.com/jinhgit/cloudlab.git
@@ -463,7 +463,7 @@ Alert rules: backend down, target down, node CPU/memory pressure.
 
 ---
 
-## 16. 면접 데모 (5분)
+## 16. 면접 데모
 
 ### 원커맨드
 
@@ -598,10 +598,10 @@ cd frontend && npm test
 # I_UNDERSTAND_AWS_MAY_CHARGE=yes ./scripts/iac-apply-free-tier.sh
 ```
 
-**과금:** AWS EC2는 영구 무료가 아닙니다. Free Tier 한도·실수 시 유료.  
+**과금:** AWS EC2는 영구 무료가 아님. Free Tier 한도·실수 시 유료.  
 상세 체크리스트: [docs/v2-aws-free-checklist.md](../docs/v2-aws-free-checklist.md)
 
-### 이어서 할 일
+###
 
 | 항목 | 설명 |
 |------|------|
@@ -637,18 +637,7 @@ cd frontend && npm test
 
 ---
 
-## 23. 커밋 컨벤션
-
-```text
-feat: fix: docs: refactor: test: ci: infra: monitoring: logging:
-```
-
-- 제목·본문: **한국어 메인** (기술 용어는 영어 OK)  
-- 큼지막한 Step 완료 시 commit + push  
-
----
-
-## 24. 라이선스
+## 23. 라이선스
 
 Portfolio project · [jinhgit/cloudlab](https://github.com/jinhgit/cloudlab)
 
